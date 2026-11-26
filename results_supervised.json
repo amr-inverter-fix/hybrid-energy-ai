@@ -1,0 +1,103 @@
+{
+ "forecast": {
+  "test_samples": 17244,
+  "mean_target_W": 123.93413228598905,
+  "MAE_W": {
+   "persistence": 20.005196663241517,
+   "mean_last_hour": 31.79221723714742,
+   "ridge_linear": 9.348587383482345,
+   "neural_net": 7.905585848098208
+  },
+  "RMSE_W": {
+   "persistence": 33.71282111805358,
+   "mean_last_hour": 53.064526523854596,
+   "ridge_linear": 18.163560532383023,
+   "neural_net": 16.925458596867333
+  },
+  "MAE_W_daylight_only": {
+   "persistence": 37.449966586942,
+   "neural_net": 13.852289871403391
+  },
+  "int8_tflite": {
+   "size_bytes": 3384,
+   "MAE_W_on_1500_samples": 10.181662078689039,
+   "float_MAE_same_samples": 10.094108367466925
+  }
+ },
+ "fault": {
+  "test_days": 120,
+  "accuracy": 0.9461823658903951,
+  "per_class": {
+   "normal": {
+    "precision": 0.948195300331821,
+    "recall": 0.9885625529511437,
+    "support": 14164
+   },
+   "pv_loss": {
+    "precision": 0.8496932515337423,
+    "recall": 0.4037900874635568,
+    "support": 686
+   },
+   "wind_stall": {
+    "precision": 0.9067961165048544,
+    "recall": 0.6531468531468532,
+    "support": 715
+   },
+   "vbat_sensor_stuck": {
+    "precision": 0.8987915407854985,
+    "recall": 0.8463726884779517,
+    "support": 703
+   },
+   "battery_overheat": {
+    "precision": 1.0,
+    "recall": 0.9979879275653923,
+    "support": 994
+   }
+  },
+  "confusion_matrix(rows=true,cols=pred; order=normal,pv_loss,wind_stall,vbat_sensor_stuck,battery_overheat)": [
+   [
+    14002,
+    49,
+    48,
+    65,
+    0
+   ],
+   [
+    409,
+    277,
+    0,
+    0,
+    0
+   ],
+   [
+    248,
+    0,
+    467,
+    0,
+    0
+   ],
+   [
+    108,
+    0,
+    0,
+    595,
+    0
+   ],
+   [
+    0,
+    0,
+    0,
+    2,
+    992
+   ]
+  ],
+  "fault_events_total": 82,
+  "fault_events_detected_with_correct_type": 70,
+  "median_detection_delay_min": 0.0,
+  "false_alarm_samples_per_day_normal": 1.35,
+  "int8_tflite": {
+   "size_bytes": 3112,
+   "agreement_with_float_model": 0.9965
+  }
+ }
+}
