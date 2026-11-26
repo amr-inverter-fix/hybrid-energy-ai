@@ -1,0 +1,67 @@
+{
+ "model": "fault.keras (deployed browser MLP 7-16-16-5)",
+ "method": "KernelSHAP, 50-sample background from seeds 11-12, 60 test samples from seed 201, 300 coalition samples",
+ "mean_abs_shap_by_class": {
+  "normal": {
+   "pv_ratio": 0.008800120004041788,
+   "wind_ratio": 0.0007906204723886115,
+   "dT_batt_amb": 0.010901079406612913,
+   "v_std": 0.023675899380587406,
+   "abs_i": 0.0051978551684390955,
+   "i_std": 0.011997622225409933,
+   "stuck": 0.0006069955380189987
+  },
+  "pv_loss": {
+   "pv_ratio": 0.011640672111355135,
+   "wind_ratio": 0.0001455594078297668,
+   "dT_batt_amb": 0.0015431054675176985,
+   "v_std": 0.002616432672102772,
+   "abs_i": 0.0033461563749705987,
+   "i_std": 0.002377437523695685,
+   "stuck": 3.685346670330525e-05
+  },
+  "wind_stall": {
+   "pv_ratio": 0.0009446641752242107,
+   "wind_ratio": 0.0004643288388895625,
+   "dT_batt_amb": 0.0014911048779766801,
+   "v_std": 0.0031376883085450437,
+   "abs_i": 0.00425616034741676,
+   "i_std": 0.0028203589466758174,
+   "stuck": 1.1880194797875242e-05
+  },
+  "vbat_sensor_stuck": {
+   "pv_ratio": 0.0016272772927747902,
+   "wind_ratio": 0.00020940429990489408,
+   "dT_batt_amb": 0.002173091195349892,
+   "v_std": 0.02379054991370274,
+   "abs_i": 0.006466798895059361,
+   "i_std": 0.013271688640457054,
+   "stuck": 0.0005946331145034909
+  },
+  "battery_overheat": {
+   "pv_ratio": 0.0004767457253284776,
+   "wind_ratio": 5.837757820411341e-05,
+   "dT_batt_amb": 0.012840831891459133,
+   "v_std": 0.0008944400248546455,
+   "abs_i": 0.0005060840645716251,
+   "i_std": 0.0006355390343519464,
+   "stuck": 1.2610882366933057e-05
+  }
+ },
+ "feature_names": [
+  "pv_ratio",
+  "wind_ratio",
+  "dT_batt_amb",
+  "v_std",
+  "abs_i",
+  "i_std",
+  "stuck"
+ ],
+ "class_names": [
+  "normal",
+  "pv_loss",
+  "wind_stall",
+  "vbat_sensor_stuck",
+  "battery_overheat"
+ ]
+}
