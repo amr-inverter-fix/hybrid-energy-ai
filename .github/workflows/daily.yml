@@ -1,0 +1,18 @@
+name: daily-simulation
+on:
+  schedule: [{cron: '17 3 * * *'}]
+  workflow_dispatch: {}
+permissions: {contents: write}
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install numpy
+      - run: python daily_eval.py
+      - run: python build_site.py
+      - run: |
+          git config user.name "daily-bot"; git config user.email "bot@users.noreply.github.com"
+          git add daily.json data.json; git commit -m "daily simulation run" || echo "no change"; git push
