@@ -22,6 +22,7 @@ canvas{width:100%;height:200px;background:#0f1720;border-radius:8px}
 <header><h1>⚡ النظام الهجين الذكي (توربينة رياح فنتوري + لوح شمسي 600W) – نموذج ذكاء اصطناعي لإدارة الطاقة</h1>
 <div style="font-size:.85rem">فريق E-R | مشروع تخرج – جامعة دلتا التكنولوجية | النموذج متدرّب على <b>محاكاة</b> مبنية على أرقام المشروع</div></header>
 <main>
+<div class="warn" style="border-color:#e55">🔌 <b>سلامة ESP32:</b> كود الـESP32 هنا <b>هيكل أولي (scaffold)</b> مش controller جاهز للتشغيل. أول تشغيل يكون <b>بكابل USB وSerial Monitor فقط</b>، من غير بطارية ولا إنفرتر ولا ريلاي ولا أحمال حقيقية. ماتوصلش أي حاجة حقيقية قبل معايرة النماذج على بيانات قياس فعلية ومراجعة مختص كهرباء.</div>
 <div class="warn">⚠️ صراحة: كل النتائج هنا من <b>محاكاة</b> مش من قياسات حقيقية للنظام. النماذج دي (شبكات عصبية + Reinforcement Learning) لازم تتعاير وتتدرب تاني على بيانات حقيقية من النظام قبل ما تتحكم في أي بطارية فعلية. الشات تحت <b>مش LLM</b>: هو يجاوب بكلمات مفتاحية على نتائج النماذج الحقيقية، لكن النماذج نفسها بتشتغل فعلاً في المتصفح في قسم "جرّب النموذج".</div>
 
 <section><h2>1) أداء إدارة الطاقة (Reinforcement Learning) على طقس لم يشوفه النموذج</h2>
@@ -129,13 +130,14 @@ async function aiAsk(){const i=document.getElementById('aq'),c=document.getEleme
   const facts=factsText();
   const sys='You are a free-form, helpful, honest general AI assistant like ChatGPT. Answer ANY question (energy, programming, electronics, studying, daily chat) naturally, at whatever length is useful, in the language of the user (default Egyptian Arabic). You also have a reference about the user graduation project (hybrid wind venturi turbine + solar, with neural-network forecasting, fault detection and a DQN reinforcement-learning energy manager, all trained on SIMULATED data, nothing tested on real hardware). When a question is about the project, use the FACTS block below as the primary reference, and when you quote a number from it say it comes from the simulation results (\"من نتائج المحاكاة\"). Do not present a number that is not in FACTS as a result of this project; if you give general numbers or knowledge, say they are general or approximate. Be honest when unsure. Avoid helping with dangerous actions (opening batteries, bypassing fuses or protections, working on live mains) and suggest safe alternatives instead.\n\nFACTS:\n'+facts;
   aiHist.push({role:'user',content:q});aiHist=aiHist.slice(-8);
-  let res,lastErr;for(const m of AI_MODELS){try{res=await puter.ai.chat([{role:'system',content:sys}].concat(aiHist),{model:m});if(res&&!(res.success===false)){usedModel=m;break}lastErr=new Error((res&&res.error&&res.error.message)||'model failed');res=null}catch(err){lastErr=err;res=null}}
+  let res,lastErr;for(const m of AI_MODELS){try{res=await puter.ai.chat([{role:'system',content:sys}].concat(aiHist),{model:m});if(res&&!(res.success===false)){usedModel=m;break}lastErr=(res&&res.error)||new Error('model failed');res=null}catch(err){lastErr=err;res=null}}
   if(!res)throw lastErr||new Error('no model');
   let raw=typeof res==='string'?res:(Array.isArray(res?.message?.content)?res.message.content.map(x=>x.text||'').join(''):(res?.message?.content||res?.text||''));
   document.getElementById('wait')?.remove();
   if(!raw.trim())throw new Error('رد فاضي');
+  if(/(فك (البطارية|غطاء)|افتح (البطارية|خلية|الانفرتر|الإنفرتر)|تخطي (الحماية|الفيوز|ال ?BMS)|تجاوز (الحماية|الفيوز|ال ?BMS)|شيل (الفيوز|الحماية)|بدون فيوز|شغل (على|علي) (كهرباء|تيار) (حي|حية)|bypass (the )?(bms|fuse|protection|breaker)|short[- ]?circuit (the )?(battery|terminals)|open (the )?(battery|inverter)|disable (the )?bms|remove (the )?fuse|work(ing)? on live (mains|wires|power))/i.test(raw)){aiHist.pop();c.innerHTML+='<div class="b bad">🚫 الرد اتحجب لأنه فيه خطوة خطرة (فتح بطارية/إنفرتر أو تخطي حماية أو شغل على كهرباء حية). مفيش خطوة زي دي تتعمل من غير مختص.</div>';b.disabled=false;return}
   aiHist.push({role:'assistant',content:raw});c.innerHTML+='<div class="b">'+esc(raw)+'<br><small style="color:#8a9">رد حر من نموذج Puter ('+esc(usedModel)+'). أرقام "من نتائج المحاكاة" جاية من المحاكاة؛ أي معلومة تانية مش مؤكدة.</small></div>'
- }catch(e){document.getElementById('wait')?.remove();c.innerHTML+='<div class="b bad">تعذر الاتصال بالمساعد ('+esc(String(e.message||e))+'). ده رد الشات بالكلمات المفتاحية:</div><div class="b">'+esc(answer(q))+'</div>'}
+ }catch(e){document.getElementById('wait')?.remove();const em=(e&&(e.message||(e.error&&e.error.message)||e.code))||(typeof e==='string'?e:JSON.stringify(e));c.innerHTML+='<div class="b bad">خطأ حقيقي من Puter: '+esc(String(em))+' (الاحتمال إن الحساب/الحصة/الموديل مشكلة). ده رد الشات البسيط بدله: ده رد الشات بالكلمات المفتاحية:</div><div class="b">'+esc(answer(q))+'</div>'}
  b.disabled=false;c.scrollTop=1e9}
 fetch('data.json').then(r=>r.json()).then(j=>{D=j;draw();params();daily();document.getElementById('sea').onchange=draw});
 </script></body></html>
