@@ -46,7 +46,7 @@ function runTwin(cfg,opts){opts=opts||{};const c=Object.assign({},DEFAULTS,cfg);
  const W=opts.weather||makeWeather(c),n=W.n,cap=c.batt_v*c.batt_ah;const sh=loadShape();
  const ctrl=typeof opts.controller==='function'?opts.controller:CONTROLLERS[opts.controller||'rule'];const useSup=!!opts.supervisor;
  const S=opts.supervise||(useSup?supervise:null);let soc=c.soc0,flexLeft=c.flex_wh,genMean=0,overrides=0;
- const T={t:[],g:[],ws:[],pv:[],wind:[],gen_dc:[],load_req:[],load_served:[],batt_w:[],soc:[],curt:[],crit_un:[],act:[]};
+ const T={t:[],g:[],ws:[],pv:[],wind:[],gen_dc:[],load_req:[],load_served:[],batt_w:[],soc:[],curt:[],crit_un:[],act:[],loss_boost:[],loss_inv:[],loss_batt:[],ta:[]};
  const A={pv:0,wind_raw:0,wind_dc:0,boost_loss:0,inv_loss:0,chg_loss:0,dis_loss:0,curtail:0,served_ac:0,req_ac:0,crit_req:0,crit_un:0,nonc_req:0,nonc_un:0,flex_req:0,flex_done:0,dbatt:0,dis_out:0,chg_in:0,minSoc:soc,resid:0};
  const e0=soc*cap;
  for(let t=0;t<n;t++){const hh=W.h[t],s=t%SPD;if(s===0)flexLeft=c.flex_wh;
@@ -67,7 +67,7 @@ function runTwin(cfg,opts){opts=opts||{};const c=Object.assign({},DEFAULTS,cfg);
   A.pv+=pv*DT;A.wind_raw+=wraw*DT;A.wind_dc+=wdc*DT;A.boost_loss+=wraw*(1-c.wind_boost_eff)*DT;A.inv_loss+=(usedDC-srvAC)*DT;A.curtail+=curt*DT;A.served_ac+=srvAC*DT;A.req_ac+=reqAC*DT;
   A.crit_req+=cr*DT;A.crit_un+=(cr-cSrv)*DT;A.nonc_req+=nc*DT;A.nonc_un+=(nc-nSrv)*DT;A.flex_req+=fl*DT;A.flex_done+=fSrv*DT;A.dis_out+=disOut*DT;A.chg_in+=chgIn*DT;flexLeft=Math.max(0,flexLeft-fSrv*DT);
   A.minSoc=Math.min(A.minSoc,soc);genMean=0.9*genMean+0.1*gen;
-  T.t.push(t);T.g.push(W.g[t]);T.ws.push(W.ws[t]);T.pv.push(pv);T.wind.push(wdc);T.gen_dc.push(gen);T.load_req.push(reqAC);T.load_served.push(srvAC);T.batt_w.push(net>=0?chgIn:-disOut);T.soc.push(soc);T.curt.push(curt);T.crit_un.push(cr-cSrv);T.act.push(act)}
+  T.t.push(t);T.g.push(W.g[t]);T.ws.push(W.ws[t]);T.pv.push(pv);T.wind.push(wdc);T.gen_dc.push(gen);T.load_req.push(reqAC);T.load_served.push(srvAC);T.batt_w.push(net>=0?chgIn:-disOut);T.soc.push(soc);T.curt.push(curt);T.crit_un.push(cr-cSrv);T.act.push(act);T.loss_boost.push(wraw*(1-c.wind_boost_eff));T.loss_inv.push(usedDC-srvAC);T.loss_batt.push(chgIn*(1-c.eff_chg)+disOut*(1/c.eff_dis-1));T.ta.push(W.ta[t])}
  A.dbatt=soc*cap-e0;
  // energy balance at the DC bus boundary:  PV + wind(terminals) = served AC + boost loss + inverter loss + battery charge/discharge losses + curtailment + change in stored energy
  const lhs=A.pv+A.wind_raw,rhs=A.served_ac+A.boost_loss+A.inv_loss+A.chg_loss+A.dis_loss+A.curtail+A.dbatt;A.resid=lhs-rhs;
