@@ -51,7 +51,7 @@ canvas{width:100%;height:200px;background:#0f1720;border-radius:8px}
 <input id="q" style="width:70%" placeholder="اكتب سؤالك" onkeydown="if(event.key=='Enter')ask()"><button onclick="ask()">إرسال</button></section>
 
 <section><h2>3ب) مساعد حواري بالذكاء الاصطناعي (Puter، تجريبي)</h2>
-<div class="warn" style="font-size:.85rem">بيرد على أي سؤال عن النظام والنموذج. الأرقام الرسمية بتيجي من نتائج النموذج بس (أخضر)، وأي كلام عام بيتعلّم "عام/غير مؤكد" (أصفر)، وأي رقم مش في النتائج بيتعلّم ⚠️ أو الرد بيترفض. سؤالك بيتبعت لخدمة Puter بعد موافقتك، وممكن تطلب منك تسجيل حساب مجاني. لو ماشتغلش استخدم الشات بالكلمات فوق.</div>
+<div class="warn" style="font-size:.85rem">بيرد على أي سؤال (طاقة، برمجة، دراسة، أي حاجة). لو السؤال عن المشروع، أرقام نتائج النموذج بتيجي الأول (أخضر)، وأي كلام تاني بيتعلّم "عام/غير مؤكد" (أصفر). بيترفض بس لو الرد فيه خطوة خطرة. سؤالك بيتبعت لخدمة Puter بعد موافقتك، وممكن تطلب منك تسجيل حساب مجاني. لو ماشتغلش استخدم الشات بالكلمات فوق.</div>
 <div id="achat" style="height:260px;overflow:auto;background:#0f1720;border-radius:8px;padding:8px;margin-top:6px"></div>
 <input id="aq" style="width:70%" placeholder="اسأل أي سؤال عن النظام والنماذج" onkeydown="if(event.key=='Enter')aiAsk()"><button id="abtn" onclick="aiAsk()">إرسال للمساعد</button></section>
 <section><h2>4) الأرقام المستخدمة: معطى ولا مفترض</h2><div id="params"></div></section>
@@ -123,20 +123,20 @@ function factsText(){const S=D.sup,X=D.disp,L=[];
 function checkAI(raw,question,facts){
  const allowed=new Set();[facts,question].forEach(t=>nums(t).forEach(n=>{allowed.add(n);allowed.add(Math.round(n));allowed.add(Math.round(n*10)/10)}));
  const okN=n=>n<=5||allowed.has(n);
- if(raw.length>1800)return{reject:'الرد طويل زيادة'};
- if(/(افتح|فك|تخطي|تجاوز|اقفل|قصر|bypass|short[- ]?circuit|open the battery|disable (the )?bms|remove (the )?fuse|بدون فيوز|ماس كهربائي)/i.test(raw))return{reject:'الرد فيه خطوة خطرة محتملة (فتح/تخطي حماية)'};
+ if(raw.length>6000)raw=raw.slice(0,6000)+'...';
+ if(/(فك (البطارية|غطاء)|افتح (البطارية|خلية)|تخطي (الحماية|الفيوز|ال ?BMS)|تجاوز (الحماية|الفيوز|ال ?BMS)|شيل (الفيوز|الحماية)|بدون فيوز|bypass (the )?(bms|fuse|protection)|short[- ]?circuit (the )?(battery|terminals)|open the battery|disable (the )?bms|remove (the )?fuse)/i.test(raw))return{reject:'الرد فيه خطوة خطرة محتملة (فتح بطارية/تخطي حماية)'};
  let off='',gen='';const m1=raw.split(/عام\s*\/\s*غير مؤكد\s*[:：]/);
  if(m1.length>=2){off=m1[0].replace(/.*من نتائج النموذج\s*[:：]/s,'').trim();gen=m1.slice(1).join(' ').trim()}else{gen=raw.trim()}
- const badOff=nums(off).filter(n=>!okN(n));if(badOff.length)return{reject:'الجزء الرسمي فيه رقم مش في النتائج ('+badOff.slice(0,3).join(', ')+')'};
- let genMarked=gen.replace(/\d+(?:[.,]\d+)?/g,t=>okN(Number(A2E(t).replace(',','')))?t:'⚠️'+t);
- return{off,gen:genMarked,flagged:genMarked!==gen}}
+ let moved=false;
+ if(off&&nums(off).some(n=>!okN(n))){gen=(off+'\n'+gen).trim();off='';moved=true}
+ return{off,gen,moved}}
 function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>')}
 async function aiAsk(){const i=document.getElementById('aq'),c=document.getElementById('achat'),q=i.value.trim();if(!q)return;
  if(!aiAgreed){if(!confirm('السؤال هيتبعت لخدمة Puter (ذكاء اصطناعي خارجي) وممكن يطلب تسجيل حساب مجاني. موافق؟'))return;aiAgreed=true}
  i.value='';c.innerHTML+='<div class="u">أنت: '+esc(q)+'</div>';const b=document.getElementById('abtn');b.disabled=true;c.innerHTML+='<div id="wait" class="b">⏳ بيفكر...</div>';c.scrollTop=1e9;
  try{if(!puterOK){await new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://js.puter.com/v2/';s.onload=res;s.onerror=()=>rej(new Error('تعذر تحميل Puter'));document.head.appendChild(s)});puterOK=true}
   const facts=factsText();
-  const sys='You are an assistant for a graduation project: a hybrid wind (venturi duct turbine) + solar system with neural-network forecasting, fault detection and a reinforcement-learning (DQN) energy manager, all trained on SIMULATED data. Reply in Egyptian Arabic. Use EXACTLY two sections with these labels. Section 1 label: "من نتائج النموذج:" containing ONLY facts and numbers copied from the FACTS block below. Section 2 label: "عام/غير مؤكد:" for general knowledge, explanations and advice; put any number that is not in FACTS here only if essential and say it is not verified. Never invent results, measurements or numbers for this system. Say clearly that results come from simulation. Never advise opening batteries, bypassing protections or fuses, or any dangerous step. If the answer is not in FACTS say so in section 1.\n\nFACTS:\n'+facts;
+  const sys='You are a friendly, knowledgeable general AI assistant (energy, programming, electronics, studying, anything). Reply in Egyptian Arabic. You also know about the user graduation project: a hybrid wind (venturi duct turbine) + solar system with neural-network forecasting, fault detection and a reinforcement-learning (DQN) energy manager, all trained on SIMULATED data. When the question is about the project, FIRST give a section labeled "من نتائج النموذج:" containing ONLY facts and numbers copied from the FACTS block below (skip this section if the question is not about the project or FACTS has no answer). Then put everything else (general knowledge, explanations, code, advice, any number not in FACTS) in a section labeled "عام/غير مؤكد:". For questions unrelated to the project, just answer normally inside the "عام/غير مؤكد:" section. Never present invented numbers as results of this system, and say results come from simulation. Never advise dangerous steps such as opening batteries, bypassing protections or fuses, or working on live mains.\n\nFACTS:\n'+facts;
   aiHist.push({role:'user',content:q});aiHist=aiHist.slice(-8);
   const res=await puter.ai.chat([{role:'system',content:sys}].concat(aiHist));
   let raw=typeof res==='string'?res:(Array.isArray(res?.message?.content)?res.message.content.map(x=>x.text||'').join(''):(res?.message?.content||res?.text||''));
@@ -144,7 +144,7 @@ async function aiAsk(){const i=document.getElementById('aq'),c=document.getEleme
   if(!raw.trim())throw new Error('رد فاضي');
   const r=checkAI(raw,q,facts);
   if(r.reject){c.innerHTML+='<div class="b bad">🚫 الرد اترفض: '+esc(r.reject)+'. جرّب الشات بالكلمات المفتاحية فوق (من النتائج الحقيقية).</div><div class="b">'+esc(answer(q))+'</div>'}
-  else{aiHist.push({role:'assistant',content:raw});c.innerHTML+=(r.off?'<div class="ok">✅ من نتائج النموذج: '+esc(r.off)+'</div>':'')+(r.gen?'<div class="gen">⚠️ عام/غير مؤكد (تأكد من مصدر آخر): '+esc(r.gen)+(r.flagged?'<br><small>الأرقام اللي عليها ⚠️ مش في نتائج النموذج.</small>':'')+'</div>':'')}
+  else{aiHist.push({role:'assistant',content:raw});c.innerHTML+=(r.off?'<div class="ok">✅ من نتائج النموذج: '+esc(r.off)+'</div>':'')+(r.gen?'<div class="gen">⚠️ عام/غير مؤكد (مش من نتائج النموذج، تأكد من مصدر آخر): '+esc(r.gen)+(r.moved?'<br><small>فيه أرقام مش في نتائج النموذج فاتنقل الكلام كله لـ"عام/غير مؤكد".</small>':'')+'</div>':'')}
  }catch(e){document.getElementById('wait')?.remove();c.innerHTML+='<div class="b bad">تعذر الاتصال بالمساعد ('+esc(String(e.message||e))+'). ده رد الشات بالكلمات المفتاحية:</div><div class="b">'+esc(answer(q))+'</div>'}
  b.disabled=false;c.scrollTop=1e9}
 fetch('data.json').then(r=>r.json()).then(j=>{D=j;draw();params();daily();document.getElementById('sea').onchange=draw});
