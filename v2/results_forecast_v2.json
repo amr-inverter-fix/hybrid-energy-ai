@@ -1,0 +1,270 @@
+{
+ "split": {
+  "train": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6
+  ],
+  "validation": [
+   7,
+   8
+  ],
+  "test": [
+   101,
+   102,
+   103
+  ],
+  "test_seasons": {
+   "101": "summer",
+   "102": "winter",
+   "103": "avg"
+  }
+ },
+ "horizons_h": [
+  1,
+  3,
+  6,
+  12,
+  24
+ ],
+ "results": {
+  "1": {
+   "test_samples": 16833,
+   "mean_target_W": 122.6551714453956,
+   "persistence": {
+    "MAE_W": 19.861510316348962,
+    "RMSE_W": 33.446607762237505,
+    "R2": 0.9541028683778635,
+    "MAPE_pct_where_target_over_50W": 21.63318443757739
+   },
+   "moving_average": {
+    "MAE_W": 31.5459714234866,
+    "RMSE_W": 52.609348082947065,
+    "R2": 0.8864447465434014,
+    "MAPE_pct_where_target_over_50W": 34.06954250949169
+   },
+   "linear_ridge": {
+    "MAE_W": 14.77835047450761,
+    "RMSE_W": 22.217371660919596,
+    "R2": 0.9797480544598608,
+    "MAPE_pct_where_target_over_50W": 12.637411338373225
+   },
+   "mlp": {
+    "MAE_W": 7.6939106639259585,
+    "RMSE_W": 16.698947185684773,
+    "R2": 0.9885591162474777,
+    "MAPE_pct_where_target_over_50W": 7.3306700402355025
+   },
+   "mlp_by_season_MAE_W": {
+    "winter": 5.543322948946949,
+    "avg": 7.7036588495711475,
+    "summer": 9.83475019325978
+   },
+   "persistence_by_season_MAE_W": {
+    "winter": 15.571523185946026,
+    "avg": 19.96101216605228,
+    "summer": 24.05199559704858
+   },
+   "mlp_MAE_W_day_vs_night_at_forecast_time": {
+    "day": 13.489964894106208,
+    "night": 2.352410001797516
+   },
+   "interval_80pct": {
+    "offset_low_W": -9.56766351228957,
+    "offset_high_W": 11.190736072570406,
+    "empirical_test_coverage": 0.8154220875660905
+   }
+  },
+  "3": {
+   "test_samples": 16797,
+   "mean_target_W": 122.89259807842492,
+   "persistence": {
+    "MAE_W": 47.931955828742765,
+    "RMSE_W": 77.16816681053058,
+    "R2": 0.7377491464763158,
+    "MAPE_pct_where_target_over_50W": 51.42171356525592
+   },
+   "moving_average": {
+    "MAE_W": 84.92151555519587,
+    "RMSE_W": 128.2983611510286,
+    "R2": 0.2750922191957297,
+    "MAPE_pct_where_target_over_50W": 82.3770777077645
+   },
+   "linear_ridge": {
+    "MAE_W": 29.94979082726354,
+    "RMSE_W": 41.01483747501328,
+    "R2": 0.9259163223301087,
+    "MAPE_pct_where_target_over_50W": 25.529409752251453
+   },
+   "mlp": {
+    "MAE_W": 12.46490366046318,
+    "RMSE_W": 24.911660720386806,
+    "R2": 0.9726696052496601,
+    "MAPE_pct_where_target_over_50W": 12.41568242617017
+   },
+   "mlp_by_season_MAE_W": {
+    "winter": 9.36239217616551,
+    "avg": 12.480658592789743,
+    "summer": 15.55166021243429
+   },
+   "persistence_by_season_MAE_W": {
+    "winter": 37.22065471530867,
+    "avg": 48.598639429761086,
+    "summer": 57.97657334115855
+   },
+   "mlp_MAE_W_day_vs_night_at_forecast_time": {
+    "day": 19.063956876048405,
+    "night": 6.358283232973552
+   },
+   "interval_80pct": {
+    "offset_low_W": -19.833521457560327,
+    "offset_high_W": 18.740338886628393,
+    "empirical_test_coverage": 0.8181222837411443
+   }
+  },
+  "6": {
+   "test_samples": 16743,
+   "mean_target_W": 123.23911292611444,
+   "persistence": {
+    "MAE_W": 85.98028559811314,
+    "RMSE_W": 126.60954653658324,
+    "R2": 0.13879421352246712,
+    "MAPE_pct_where_target_over_50W": 85.44533618498383
+   },
+   "moving_average": {
+    "MAE_W": 140.6171004603016,
+    "RMSE_W": 185.64341710985875,
+    "R2": -0.851540176282539,
+    "MAPE_pct_where_target_over_50W": 110.91427221100967
+   },
+   "linear_ridge": {
+    "MAE_W": 37.08144431234451,
+    "RMSE_W": 51.29221585458293,
+    "R2": 0.8586561375115349,
+    "MAPE_pct_where_target_over_50W": 30.880762215025275
+   },
+   "mlp": {
+    "MAE_W": 18.58837800188072,
+    "RMSE_W": 33.99253679739867,
+    "R2": 0.9379215041860192,
+    "MAPE_pct_where_target_over_50W": 18.28109489510695
+   },
+   "mlp_by_season_MAE_W": {
+    "winter": 14.426098523756993,
+    "avg": 18.218726070614604,
+    "summer": 23.12030941127056
+   },
+   "persistence_by_season_MAE_W": {
+    "winter": 66.10294489710738,
+    "avg": 86.81948305581894,
+    "summer": 105.01842884141313
+   },
+   "mlp_MAE_W_day_vs_night_at_forecast_time": {
+    "day": 20.444425348506655,
+    "night": 16.8601346074965
+   },
+   "interval_80pct": {
+    "offset_low_W": -27.55839899220527,
+    "offset_high_W": 31.36385160225417,
+    "empirical_test_coverage": 0.8066057456847637
+   }
+  },
+  "12": {
+   "test_samples": 16635,
+   "mean_target_W": 123.37516625832077,
+   "persistence": {
+    "MAE_W": 133.3177641515872,
+    "RMSE_W": 171.70655111431302,
+    "R2": -1.9400454438306416,
+    "MAPE_pct_where_target_over_50W": 117.39263474001449
+   },
+   "moving_average": {
+    "MAE_W": 141.77043167054777,
+    "RMSE_W": 170.58108257331614,
+    "R2": -1.9016300860551971,
+    "MAPE_pct_where_target_over_50W": 90.07874106218084
+   },
+   "linear_ridge": {
+    "MAE_W": 35.45923371629182,
+    "RMSE_W": 49.2641235974935,
+    "R2": 0.757985250118731,
+    "MAPE_pct_where_target_over_50W": 30.50067937150496
+   },
+   "mlp": {
+    "MAE_W": 25.67995681237699,
+    "RMSE_W": 42.125897968717815,
+    "R2": 0.8230385549052857,
+    "MAPE_pct_where_target_over_50W": 24.251051609865677
+   },
+   "mlp_by_season_MAE_W": {
+    "winter": 20.991948508094524,
+    "avg": 26.16488630518052,
+    "summer": 29.883035623855925
+   },
+   "persistence_by_season_MAE_W": {
+    "winter": 101.5019636465495,
+    "avg": 133.43574695825487,
+    "summer": 165.01558184995724
+   },
+   "mlp_MAE_W_day_vs_night_at_forecast_time": {
+    "day": 14.100985468003843,
+    "night": 36.32507550073111
+   },
+   "interval_80pct": {
+    "offset_low_W": -42.28551204012125,
+    "offset_high_W": 38.47659860762808,
+    "empirical_test_coverage": 0.7755335136759843
+   }
+  },
+  "24": {
+   "test_samples": 16419,
+   "mean_target_W": 122.01691335066953,
+   "persistence": {
+    "MAE_W": 123.04748809931185,
+    "RMSE_W": 151.7091962672436,
+    "R2": -7.609226479447514,
+    "MAPE_pct_where_target_over_50W": 102.8567382779111
+   },
+   "moving_average": {
+    "MAE_W": 35.590063068870904,
+    "RMSE_W": 46.33319902884071,
+    "R2": 0.19698271972885317,
+    "MAPE_pct_where_target_over_50W": 30.493015490400243
+   },
+   "linear_ridge": {
+    "MAE_W": 31.44073016486419,
+    "RMSE_W": 38.50321795056756,
+    "R2": 0.4454580910643783,
+    "MAPE_pct_where_target_over_50W": 25.796501910862506
+   },
+   "mlp": {
+    "MAE_W": 30.23755128856345,
+    "RMSE_W": 37.917859248184264,
+    "R2": 0.4621911581427457,
+    "MAPE_pct_where_target_over_50W": 25.96668856969088
+   },
+   "mlp_by_season_MAE_W": {
+    "winter": 25.89370660742778,
+    "avg": 32.09899604794071,
+    "summer": 32.71995121032185
+   },
+   "persistence_by_season_MAE_W": {
+    "winter": 94.0468191711329,
+    "avg": 121.96440514866512,
+    "summer": 153.13123997813747
+   },
+   "mlp_MAE_W_day_vs_night_at_forecast_time": {
+    "day": 24.006500473912393,
+    "night": 35.96810731662906
+   },
+   "interval_80pct": {
+    "offset_low_W": -52.00458286576848,
+    "offset_high_W": 42.30514716191338,
+    "empirical_test_coverage": 0.7890249101650527
+   }
+  }
+ }
+}
