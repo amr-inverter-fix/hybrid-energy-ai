@@ -33,3 +33,9 @@ Authenticated device endpoints, MQTT broker/bridge, Modbus TCP, persistent histo
 - Tests: `python3 -m unittest discover -s tests`; `node --test tests/test_engine.mjs tests/test_iot_maint.mjs tests/test_platform.mjs`; browser smoke: serve the folder and run `node tests/e2e_smoke.mjs` (needs `puppeteer-core` and Chrome).
 - Re-run experiments (Python 3 + tensorflow, scikit-learn, shap, openpyxl): see script headers. `node eval_controllers.mjs` regenerates the controller evaluation.
 - Deploy: push to the `main` branch; Pages serves the folder.
+
+## Round 2 additions
+- `backend/`: `schema.py` (telemetry fields, units, ranges), `service.py` (single ingest path and live-eligibility rule), `store.py` (SQLite), `security.py` (hashing, rate limit), `app.py` (REST + WebSocket), `adapters.py` (MQTT, Modbus). Endpoints and setup: DEPLOYMENT.md.
+- `scenarios.js`: 8 scenarios over `twin_engine.js`; results carry config, assumptions, versions, timestamps.
+- `forecast_rolling.py`, `eval_cost_reasons.mjs`, `report_files.py`: evaluation and report tooling with outputs in `v2/`.
+- The browser app and the backend are not connected yet (needs a hosted backend).
