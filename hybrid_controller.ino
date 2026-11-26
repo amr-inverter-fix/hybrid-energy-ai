@@ -1,3 +1,5 @@
+// SCAFFOLD ONLY - not a ready controller, never run on a real ESP32.
+// First run: USB + Serial only. NO battery, inverter, relay or real loads connected.
 // ESP32 hybrid wind+solar controller skeleton (TFLite Micro). NOT TESTED ON HARDWARE.
 // Models were trained on SIMULATED data: recalibrate/retrain with real logs before controlling a real battery.
 // Library: "TensorFlowLite_ESP32" (Arduino Library Manager) or esp-tflite-micro.
