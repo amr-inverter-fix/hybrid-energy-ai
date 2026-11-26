@@ -51,7 +51,7 @@ canvas{width:100%;height:200px;background:#0f1720;border-radius:8px}
 <input id="q" style="width:70%" placeholder="اكتب سؤالك" onkeydown="if(event.key=='Enter')ask()"><button onclick="ask()">إرسال</button></section>
 
 <section><h2>3ب) مساعد حواري بالذكاء الاصطناعي (Puter، تجريبي)</h2>
-<div class="warn" style="font-size:.85rem">بيرد على أي سؤال (طاقة، برمجة، دراسة، أي حاجة). لو السؤال عن المشروع، أرقام نتائج النموذج بتيجي الأول (أخضر)، وأي كلام تاني بيتعلّم "عام/غير مؤكد" (أصفر). بيترفض بس لو الرد فيه خطوة خطرة. سؤالك بيتبعت لخدمة Puter بعد موافقتك، وممكن تطلب منك تسجيل حساب مجاني. لو ماشتغلش استخدم الشات بالكلمات فوق.</div>
+<div class="warn" style="font-size:.85rem">نموذج حر بيرد على أي سؤال (طاقة، برمجة، دراسة، أي حاجة) من غير قيود على الرد. بياخد نتائج المحاكاة كمرجع لأسئلة المشروع وبيقول لما رقم يكون منها. ممكن يغلط زي أي نموذج، فراجع المعلومات المهمة. سؤالك بيتبعت لخدمة Puter بعد موافقتك، وممكن تطلب منك تسجيل حساب مجاني. لو ماشتغلش استخدم الشات بالكلمات فوق.</div>
 <div id="achat" style="height:260px;overflow:auto;background:#0f1720;border-radius:8px;padding:8px;margin-top:6px"></div>
 <input id="aq" style="width:70%" placeholder="اسأل أي سؤال عن النظام والنماذج" onkeydown="if(event.key=='Enter')aiAsk()"><button id="abtn" onclick="aiAsk()">إرسال للمساعد</button></section>
 <section><h2>4) الأرقام المستخدمة: معطى ولا مفترض</h2><div id="params"></div></section>
@@ -92,7 +92,7 @@ function daily(){const d=D.daily;let h='<div>تاريخ آخر تشغيل: '+d.d
  document.getElementById('daily').innerHTML=h+'</table>'}
 function norm(s){return s.toLowerCase().replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي')}
 function answer(t){t=norm(t);const S=D.sup,X=D.disp;const has=(...k)=>k.some(w=>t.includes(norm(w)));
- if(t.length<40&&has('سلام','اهلا','أهلا','مرحب','هاي','هلا','صباح','مساء','ازيك','عامل ايه','hello','hi','منور','شكرا','thanks'))return 'أهلاً بيك! 👋 أنا مساعد مشروع النظام الهجين (رياح + شمس). اسألني عن الأداء، التوقع، الأعطال، ESP32، الافتراضات، أو إيه اللي ناقص. وللأسئلة العامة استخدم المساعد الحواري (Puter) اللي في القسم اللي فوق.';
+ if(t.length<40&&has('سلام','اهلا','أهلا','مرحب','هاي','هلا','صباح','مساء','ازيك','عامل ايه','hello','hi','منور','شكرا','thanks'))return 'أهلاً بيك! 👋 أنا مساعد مشروع النظام الهجين (رياح + شمس). اسألني عن الأداء، التوقع، الأعطال، ESP32، الافتراضات، أو إيه اللي ناقص. وللأسئلة العامة المساعد الحواري (Puter) اللي في القسم اللي فوق هو اللي بيرد (لو مش شغال دلوقتي جرّب تاني بعد شوية).';
  const sea=has('شتا','شتاء','winter','هاد')?'winter':has('صيف','summer','نشط')?'summer':has('متوسط','avg','average','سنه')?'avg':null;
  if(has('ناقص','محتاج','حقيقي','معايره','calib','real'))return 'اللي ناقص: (1) بطارية حقيقية (النوع/الفولت/الأمبير)، (2) الأحمال الفعلية بالواط والساعات، (3) قياسات حساسات حقيقية (إشعاع، رياح، جهد/تيار/حرارة)، (4) تأكيد المولد النهائي. النماذج الحالية اتدربت على محاكاة، ولازم تتعاير وتتدرب تاني على بيانات حقيقية.';
  if(has('حدود','عيوب','صراحه','limit','honest','ثقه'))return 'حدود صريحة: كل الأرقام من محاكاة. عطل اللوح/التوربينة مش بيتكشف لو مفيش شمس/رياح أصلاً. التنبؤ بالإنتاج بيحسّن على خط الأساس لكن المحاكاة سهلة نسبياً. الـDQN في الصيف تقريباً زي القاعدة اليدوية (مش أحسن)، وميزته الكبيرة في الشتا. نسخة int8 من الـDQN أضعف، فبنستخدم float32 على ESP32.';
@@ -103,11 +103,11 @@ function answer(t){t=norm(t);const S=D.sup,X=D.disp;const has=(...k)=>k.some(w=>
  if(has('اداء','نتيجه','dqn','rl','تحكم','توزيع','احمال','بطاريه','شحن','سياسه','performance','result')||sea){const ss=sea?[sea]:['winter','avg','summer'],nm={winter:'شتاء',avg:'متوسط',summer:'صيف'};
   return ss.map(s=>{const R=X['dispatch_'+s+'_3_unseen_seeds_x_20_days'];const f=k=>R[k].black_h.toFixed(1)+' ساعة انقطاع حرج، فصل غير الحرج '+R[k].shed_Wh_day.toFixed(0)+' Wh/يوم';return nm[s]+': جدول ثابت → '+f('naive_fixed_schedule')+' | قاعدة يدوية → '+f('hand_written_rule')+' | DQN → '+f('DQN_neural_policy')}).join('\n')+'\n(على 3 طقسات لم يتدرب عليها × 20 يوم، محاكاة)'}
  if(has('مين','ايه','انت','about','what','نموذج'))return 'ده نموذج لإدارة طاقة النظام الهجين (توربينة فنتوري + لوح 600W + بطارية): شبكة عصبية لتوقع الإنتاج، شبكة لكشف الأعطال، وDQN (Reinforcement Learning) بيقرر شحن البطارية وتوزيع/فصل الأحمال. متدرب على محاكاة لأرقام مشروعكم.';
- return 'ده الرد السريع (من غير ذكاء اصطناعي حر) فمعنديش إجابة لسؤال عام هنا. للأسئلة العامة (طاقة، برمجة، دراسة...) استخدم المساعد الحواري بتاع Puter في القسم اللي فوق. وعن المشروع اسألني عن: الأداء، الشتا، الصيف، التوقع، الأعطال، ESP32، الافتراضات، إيه اللي ناقص، حدود النموذج.'}
+ return 'ده الرد السريع (من غير ذكاء اصطناعي حر) فمعنديش إجابة لسؤال عام هنا. الأسئلة العامة بيرد عليها المساعد الحواري (Puter) في القسم اللي فوق، ولو مش شغال دلوقتي جرّب تاني بعد شوية. وعن المشروع اسألني عن: الأداء، الشتا، الصيف، التوقع، الأعطال، ESP32، الافتراضات، إيه اللي ناقص، حدود النموذج.'}
 function ask(){const i=document.getElementById('q'),c=document.getElementById('chat');if(!i.value.trim())return;c.innerHTML+='<div class="u">أنت: '+i.value.replace(/</g,'&lt;')+'</div><div class="b">'+answer(i.value).replace(/</g,'&lt;').replace(/\n/g,'<br>')+'</div>';i.value='';c.scrollTop=c.scrollHeight}
 
 /* ---------- AI chat (Puter) with checks ---------- */
-let aiHist=[],puterOK=false,aiAgreed=false;
+let aiHist=[],puterOK=false,aiAgreed=false,usedModel='';const AI_MODELS=['gpt-5.5','gpt-5.4-nano'];
 function A2E(t){return t.replace(/٫/g,'.').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d))}
 function nums(t){return (A2E(t).replace(/,/g,'').match(/\d+(?:\.\d+)?/g)||[]).map(Number)}
 function factsText(){const S=D.sup,X=D.disp,L=[];
@@ -121,31 +121,20 @@ function factsText(){const S=D.sup,X=D.disp,L=[];
  L.push('GIVEN inputs (Excel): PV 600 W, derate 0.779, PSH 4.2/5.5/6.8, mean wind 2.32/3.76/5.20 m/s Qwesna, duct 90 to 35 cm, Kv 2.40, Cp 0.35, XD-3420 generator power table.');
  L.push('ASSUMED inputs: battery 24V 100Ah LiFePO4, loads about 2.2 kWh/day, boost converter efficiency 90%, wind cut-in 1.9 m/s and 60 W cap, sensors. Not yet validated on real hardware; nothing ran on an ESP32.');
  return L.join('\n')}
-function checkAI(raw,question,facts){
- const allowed=new Set();[facts,question].forEach(t=>nums(t).forEach(n=>{allowed.add(n);allowed.add(Math.round(n));allowed.add(Math.round(n*10)/10)}));
- const okN=n=>n<=5||allowed.has(n);
- if(raw.length>6000)raw=raw.slice(0,6000)+'...';
- if(/(فك (البطارية|غطاء)|افتح (البطارية|خلية)|تخطي (الحماية|الفيوز|ال ?BMS)|تجاوز (الحماية|الفيوز|ال ?BMS)|شيل (الفيوز|الحماية)|بدون فيوز|bypass (the )?(bms|fuse|protection)|short[- ]?circuit (the )?(battery|terminals)|open the battery|disable (the )?bms|remove (the )?fuse)/i.test(raw))return{reject:'الرد فيه خطوة خطرة محتملة (فتح بطارية/تخطي حماية)'};
- let off='',gen='';const m1=raw.split(/عام\s*\/\s*غير مؤكد\s*[:：]/);
- if(m1.length>=2){off=m1[0].replace(/.*من نتائج النموذج\s*[:：]/s,'').trim();gen=m1.slice(1).join(' ').trim()}else{gen=raw.trim()}
- let moved=false;
- if(off&&nums(off).some(n=>!okN(n))){gen=(off+'\n'+gen).trim();off='';moved=true}
- return{off,gen,moved}}
 function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>')}
 async function aiAsk(){const i=document.getElementById('aq'),c=document.getElementById('achat'),q=i.value.trim();if(!q)return;
  if(!aiAgreed){if(!confirm('السؤال هيتبعت لخدمة Puter (ذكاء اصطناعي خارجي) وممكن يطلب تسجيل حساب مجاني. موافق؟'))return;aiAgreed=true}
  i.value='';c.innerHTML+='<div class="u">أنت: '+esc(q)+'</div>';const b=document.getElementById('abtn');b.disabled=true;c.innerHTML+='<div id="wait" class="b">⏳ بيفكر...</div>';c.scrollTop=1e9;
  try{if(!puterOK){await new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://js.puter.com/v2/';s.onload=res;s.onerror=()=>rej(new Error('تعذر تحميل Puter'));document.head.appendChild(s)});puterOK=true}
   const facts=factsText();
-  const sys='You are a friendly, knowledgeable general AI assistant (energy, programming, electronics, studying, anything). Reply in Egyptian Arabic. You also know about the user graduation project: a hybrid wind (venturi duct turbine) + solar system with neural-network forecasting, fault detection and a reinforcement-learning (DQN) energy manager, all trained on SIMULATED data. When the question is about the project, FIRST give a section labeled "من نتائج النموذج:" containing ONLY facts and numbers copied from the FACTS block below (skip this section if the question is not about the project or FACTS has no answer). Then put everything else (general knowledge, explanations, code, advice, any number not in FACTS) in a section labeled "عام/غير مؤكد:". For questions unrelated to the project, just answer normally inside the "عام/غير مؤكد:" section. Never present invented numbers as results of this system, and say results come from simulation. Never advise dangerous steps such as opening batteries, bypassing protections or fuses, or working on live mains.\n\nFACTS:\n'+facts;
+  const sys='You are a free-form, helpful, honest general AI assistant like ChatGPT. Answer ANY question (energy, programming, electronics, studying, daily chat) naturally, at whatever length is useful, in the language of the user (default Egyptian Arabic). You also have a reference about the user graduation project (hybrid wind venturi turbine + solar, with neural-network forecasting, fault detection and a DQN reinforcement-learning energy manager, all trained on SIMULATED data, nothing tested on real hardware). When a question is about the project, use the FACTS block below as the primary reference, and when you quote a number from it say it comes from the simulation results (\"من نتائج المحاكاة\"). Do not present a number that is not in FACTS as a result of this project; if you give general numbers or knowledge, say they are general or approximate. Be honest when unsure. Avoid helping with dangerous actions (opening batteries, bypassing fuses or protections, working on live mains) and suggest safe alternatives instead.\n\nFACTS:\n'+facts;
   aiHist.push({role:'user',content:q});aiHist=aiHist.slice(-8);
-  const res=await puter.ai.chat([{role:'system',content:sys}].concat(aiHist));
+  let res,lastErr;for(const m of AI_MODELS){try{res=await puter.ai.chat([{role:'system',content:sys}].concat(aiHist),{model:m});if(res&&!(res.success===false)){usedModel=m;break}lastErr=new Error((res&&res.error&&res.error.message)||'model failed');res=null}catch(err){lastErr=err;res=null}}
+  if(!res)throw lastErr||new Error('no model');
   let raw=typeof res==='string'?res:(Array.isArray(res?.message?.content)?res.message.content.map(x=>x.text||'').join(''):(res?.message?.content||res?.text||''));
   document.getElementById('wait')?.remove();
   if(!raw.trim())throw new Error('رد فاضي');
-  const r=checkAI(raw,q,facts);
-  if(r.reject){c.innerHTML+='<div class="b bad">🚫 الرد اترفض: '+esc(r.reject)+'. اسأل بطريقة تانية أو استشر مختص كهرباء/بطاريات قبل أي خطوة عملية.</div>'}
-  else{aiHist.push({role:'assistant',content:raw});c.innerHTML+=(r.off?'<div class="ok">✅ من نتائج النموذج: '+esc(r.off)+'</div>':'')+(r.gen?'<div class="gen">⚠️ عام/غير مؤكد (مش من نتائج النموذج، تأكد من مصدر آخر): '+esc(r.gen)+(r.moved?'<br><small>فيه أرقام مش في نتائج النموذج فاتنقل الكلام كله لـ"عام/غير مؤكد".</small>':'')+'</div>':'')}
+  aiHist.push({role:'assistant',content:raw});c.innerHTML+='<div class="b">'+esc(raw)+'<br><small style="color:#8a9">رد حر من نموذج Puter ('+esc(usedModel)+'). أرقام "من نتائج المحاكاة" جاية من المحاكاة؛ أي معلومة تانية مش مؤكدة.</small></div>'
  }catch(e){document.getElementById('wait')?.remove();c.innerHTML+='<div class="b bad">تعذر الاتصال بالمساعد ('+esc(String(e.message||e))+'). ده رد الشات بالكلمات المفتاحية:</div><div class="b">'+esc(answer(q))+'</div>'}
  b.disabled=false;c.scrollTop=1e9}
 fetch('data.json').then(r=>r.json()).then(j=>{D=j;draw();params();daily();document.getElementById('sea').onchange=draw});
