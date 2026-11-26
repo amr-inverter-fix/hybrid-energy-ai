@@ -92,6 +92,7 @@ function daily(){const d=D.daily;let h='<div>تاريخ آخر تشغيل: '+d.d
  document.getElementById('daily').innerHTML=h+'</table>'}
 function norm(s){return s.toLowerCase().replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي')}
 function answer(t){t=norm(t);const S=D.sup,X=D.disp;const has=(...k)=>k.some(w=>t.includes(norm(w)));
+ if(t.length<40&&has('سلام','اهلا','أهلا','مرحب','هاي','هلا','صباح','مساء','ازيك','عامل ايه','hello','hi','منور','شكرا','thanks'))return 'أهلاً بيك! 👋 أنا مساعد مشروع النظام الهجين (رياح + شمس). اسألني عن الأداء، التوقع، الأعطال، ESP32، الافتراضات، أو إيه اللي ناقص. وللأسئلة العامة استخدم المساعد الحواري (Puter) اللي في القسم اللي فوق.';
  const sea=has('شتا','شتاء','winter','هاد')?'winter':has('صيف','summer','نشط')?'summer':has('متوسط','avg','average','سنه')?'avg':null;
  if(has('ناقص','محتاج','حقيقي','معايره','calib','real'))return 'اللي ناقص: (1) بطارية حقيقية (النوع/الفولت/الأمبير)، (2) الأحمال الفعلية بالواط والساعات، (3) قياسات حساسات حقيقية (إشعاع، رياح، جهد/تيار/حرارة)، (4) تأكيد المولد النهائي. النماذج الحالية اتدربت على محاكاة، ولازم تتعاير وتتدرب تاني على بيانات حقيقية.';
  if(has('حدود','عيوب','صراحه','limit','honest','ثقه'))return 'حدود صريحة: كل الأرقام من محاكاة. عطل اللوح/التوربينة مش بيتكشف لو مفيش شمس/رياح أصلاً. التنبؤ بالإنتاج بيحسّن على خط الأساس لكن المحاكاة سهلة نسبياً. الـDQN في الصيف تقريباً زي القاعدة اليدوية (مش أحسن)، وميزته الكبيرة في الشتا. نسخة int8 من الـDQN أضعف، فبنستخدم float32 على ESP32.';
@@ -102,7 +103,7 @@ function answer(t){t=norm(t);const S=D.sup,X=D.disp;const has=(...k)=>k.some(w=>
  if(has('اداء','نتيجه','dqn','rl','تحكم','توزيع','احمال','بطاريه','شحن','سياسه','performance','result')||sea){const ss=sea?[sea]:['winter','avg','summer'],nm={winter:'شتاء',avg:'متوسط',summer:'صيف'};
   return ss.map(s=>{const R=X['dispatch_'+s+'_3_unseen_seeds_x_20_days'];const f=k=>R[k].black_h.toFixed(1)+' ساعة انقطاع حرج، فصل غير الحرج '+R[k].shed_Wh_day.toFixed(0)+' Wh/يوم';return nm[s]+': جدول ثابت → '+f('naive_fixed_schedule')+' | قاعدة يدوية → '+f('hand_written_rule')+' | DQN → '+f('DQN_neural_policy')}).join('\n')+'\n(على 3 طقسات لم يتدرب عليها × 20 يوم، محاكاة)'}
  if(has('مين','ايه','انت','about','what','نموذج'))return 'ده نموذج لإدارة طاقة النظام الهجين (توربينة فنتوري + لوح 600W + بطارية): شبكة عصبية لتوقع الإنتاج، شبكة لكشف الأعطال، وDQN (Reinforcement Learning) بيقرر شحن البطارية وتوزيع/فصل الأحمال. متدرب على محاكاة لأرقام مشروعكم.';
- return 'مش فاهم السؤال بالظبط. جرّب: الأداء، الشتا، الصيف، التوقع، الأعطال، ESP32، الافتراضات، إيه اللي ناقص، حدود النموذج.'}
+ return 'ده الرد السريع (من غير ذكاء اصطناعي حر) فمعنديش إجابة لسؤال عام هنا. للأسئلة العامة (طاقة، برمجة، دراسة...) استخدم المساعد الحواري بتاع Puter في القسم اللي فوق. وعن المشروع اسألني عن: الأداء، الشتا، الصيف، التوقع، الأعطال، ESP32، الافتراضات، إيه اللي ناقص، حدود النموذج.'}
 function ask(){const i=document.getElementById('q'),c=document.getElementById('chat');if(!i.value.trim())return;c.innerHTML+='<div class="u">أنت: '+i.value.replace(/</g,'&lt;')+'</div><div class="b">'+answer(i.value).replace(/</g,'&lt;').replace(/\n/g,'<br>')+'</div>';i.value='';c.scrollTop=c.scrollHeight}
 
 /* ---------- AI chat (Puter) with checks ---------- */
@@ -143,7 +144,7 @@ async function aiAsk(){const i=document.getElementById('aq'),c=document.getEleme
   document.getElementById('wait')?.remove();
   if(!raw.trim())throw new Error('رد فاضي');
   const r=checkAI(raw,q,facts);
-  if(r.reject){c.innerHTML+='<div class="b bad">🚫 الرد اترفض: '+esc(r.reject)+'. جرّب الشات بالكلمات المفتاحية فوق (من النتائج الحقيقية).</div><div class="b">'+esc(answer(q))+'</div>'}
+  if(r.reject){c.innerHTML+='<div class="b bad">🚫 الرد اترفض: '+esc(r.reject)+'. اسأل بطريقة تانية أو استشر مختص كهرباء/بطاريات قبل أي خطوة عملية.</div>'}
   else{aiHist.push({role:'assistant',content:raw});c.innerHTML+=(r.off?'<div class="ok">✅ من نتائج النموذج: '+esc(r.off)+'</div>':'')+(r.gen?'<div class="gen">⚠️ عام/غير مؤكد (مش من نتائج النموذج، تأكد من مصدر آخر): '+esc(r.gen)+(r.moved?'<br><small>فيه أرقام مش في نتائج النموذج فاتنقل الكلام كله لـ"عام/غير مؤكد".</small>':'')+'</div>':'')}
  }catch(e){document.getElementById('wait')?.remove();c.innerHTML+='<div class="b bad">تعذر الاتصال بالمساعد ('+esc(String(e.message||e))+'). ده رد الشات بالكلمات المفتاحية:</div><div class="b">'+esc(answer(q))+'</div>'}
  b.disabled=false;c.scrollTop=1e9}
