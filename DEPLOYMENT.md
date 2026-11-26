@@ -34,3 +34,12 @@ Not hosted. A public host needs an account and HTTPS. Free tiers exist but each 
 
 ## 3. Reports
 `python3 report_files.py scenario.json outdir` writes and validates report.json/csv/xlsx/pdf (needs openpyxl, reportlab, pdftotext).
+
+## Hosting status (honest)
+Deployed: https://amrhybrid.pythonanywhere.com (PythonAnywhere free plan, account `amrhybrid`, registered with Amr's email, no card).
+- Why not elsewhere: Render asks for a card even for the free service; Hugging Face Docker Spaces need a paid plan and its signup showed a captcha.
+- How it runs: free PythonAnywhere is WSGI only, so `backend/wsgi_shim.py` runs the FastAPI app one request at a time. REST works; WebSocket `/ws/telemetry` does NOT work there. The WSGI file in /var/www holds the admin and viewer keys (file mode 600, never in the repo). Keys are saved in the Instinct vault entries "Hybrid backend admin key (PythonAnywhere)" and "Hybrid backend viewer key (PythonAnywhere)".
+- Storage: SQLite at /home/amrhybrid/hybrid.db on PythonAnywhere's persistent disk (unlike Render free).
+- Free-plan limits to expect: the web app must be extended from the Web tab about every 3 months or it is disabled; CPU quota per day; outbound internet only to a whitelist (so the backend cannot pull from MQTT brokers or other hosts); one worker.
+- Update the code: in a PythonAnywhere Bash console run `cd ~/hybrid-energy-ai && git pull`, then press Reload on the Web tab (or touch the WSGI file).
+- A test device named "E2E TEST DEVICE (not real hardware)" with 12 synthetic packets was registered to prove the path. Delete it before using real devices.
