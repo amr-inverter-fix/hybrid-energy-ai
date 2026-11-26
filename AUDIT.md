@@ -16,5 +16,5 @@
 4. جدول التوربينة: معطى لحد 5.83 م/ث، وبعده مفترض. السقف 60W مفترض.
 5. الـDQN مدرّب على إعدادات واحدة؛ int8 أضعف (74% توافق) فمش مستخدم.
 6. أُصلح أثناء الاختبار: التوأم كان بيقبل SoC ابتدائي خارج حدود البطارية، دلوقتي بيرفضه.
-7. لا توجد مكتبات sklearn/shap/xgboost/pytest في بيئة التدريب، فتم استخدام numpy/TensorFlow و`unittest` و`node --test`.
+7. sklearn وshap اتركّبوا لاحقاً (مجاناً) لتجارب Random Forest وIsolation Forest وSHAP؛ xgboost وpytest غير مستخدمين (unittest و`node --test` بدلهم).
 8. workflow اليومي لسه ماتشغلش في GitHub (مش متحقق).
