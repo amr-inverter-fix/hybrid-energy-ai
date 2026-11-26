@@ -23,7 +23,7 @@ function validate(c){const errs=[];const num=(k,lo,hi)=>{const x=c[k];if(typeof 
  num('batt_v',6,60);num('batt_ah',1,5000);num('soc0',0,1);num('soc_min',0,0.5);num('soc_max',0.5,1);num('eff_chg',0.5,1);num('eff_dis',0.5,1);num('max_chg_w',0,50000);num('max_dis_w',0,50000);
  num('crit_wh',0,100000);num('nonc_wh',0,100000);num('flex_wh',0,100000);num('flex_w',1,10000);num('inv_eff',0.5,1);num('psh',0.5,10);num('wind_mean',0,15);num('variability',0,1);num('days',1,14);num('seed',0,1e9);num('t_amb_mean',-20,55);
  if(c.soc_min>=c.soc_max)errs.push('soc_min must be below soc_max');if(c.soc0<c.soc_min||c.soc0>c.soc_max)errs.push('soc0 must be between soc_min and soc_max'); return errs}
-function makeWeather(c){const r=mulberry32(c.seed|0),n=c.days*SPD;let sumCS=0;for(let i=0;i<SPD;i++)sumCS+=clearSky(i/6)*DT;
+function makeWeather(c){c=Object.assign({},DEFAULTS,c);const r=mulberry32(c.seed|0),n=c.days*SPD;let sumCS=0;for(let i=0;i<SPD;i++)sumCS+=clearSky(i/6)*DT;
  const scale=c.psh*1000/sumCS;const g=new Float64Array(n),ws=new Float64Array(n),ta=new Float64Array(n),h=new Float64Array(n);let K=0.85,x=0,y=0;
  for(let d=0;d<c.days;d++){K=Math.min(1,Math.max(0.2,(1-0.5*c.variability)*K+0.5*c.variability*(0.25+0.75*r())+(1-c.variability)*0.15*(1-K)));
   const wm=Math.max(0,c.wind_mean*(1+c.variability*0.25*gauss(r)));
