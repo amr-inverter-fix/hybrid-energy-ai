@@ -188,6 +188,14 @@ def create_app(cfg: Config, clock=None):
     return app
 
 
+def app_from_env():
+    """For hosts: uvicorn backend.app:app_from_env --factory"""
+    cfg = config_from_env()
+    if not cfg.admin_key:
+        raise RuntimeError("HYBRID_ADMIN_KEY is not set")
+    return create_app(cfg)
+
+
 def main():  # uvicorn backend.app:app --factory is also fine
     import uvicorn
     cfg = config_from_env()
