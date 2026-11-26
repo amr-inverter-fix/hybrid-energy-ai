@@ -1,0 +1,527 @@
+{
+ "seeds": {
+  "train": [
+   11,
+   12,
+   13,
+   14,
+   15,
+   16
+  ],
+  "validation": [
+   17,
+   18
+  ],
+  "test": [
+   201,
+   202,
+   203
+  ],
+  "note": "test seeds identical to v1; no test data used for training/calibration"
+ },
+ "features": [
+  "pv_ratio",
+  "wind_ratio",
+  "dT_batt_amb",
+  "v_std",
+  "|i|",
+  "i_std",
+  "stuck",
+  "g>200",
+  "ws>3.5"
+ ],
+ "temperature": 0.7,
+ "calibration_ECE": {
+  "before": 0.09968709272528117,
+  "after": 0.03559668070367252
+ },
+ "all_samples": {
+  "v2_single": {
+   "accuracy": 0.9440389294403893,
+   "per_class": {
+    "normal": {
+     "precision": 0.9478361145027812,
+     "recall": 0.9865151087263485,
+     "f1": 0.966788901958071,
+     "support": 14164
+    },
+    "pv_loss": {
+     "precision": 0.8647798742138365,
+     "recall": 0.4008746355685131,
+     "f1": 0.547808764940239,
+     "support": 686
+    },
+    "wind_stall": {
+     "precision": 0.8940269749518305,
+     "recall": 0.6489510489510489,
+     "f1": 0.7520259319286873,
+     "support": 715
+    },
+    "vbat_sensor_stuck": {
+     "precision": 0.8567293777134588,
+     "recall": 0.8421052631578947,
+     "f1": 0.8493543758967002,
+     "support": 703
+    },
+    "battery_overheat": {
+     "precision": 1.0,
+     "recall": 0.9979879275653923,
+     "f1": 0.9989929506545822,
+     "support": 994
+    }
+   },
+   "macro_f1": 0.8229941850756559,
+   "confusion_matrix": [
+    [
+     13973,
+     43,
+     55,
+     93,
+     0
+    ],
+    [
+     407,
+     275,
+     0,
+     4,
+     0
+    ],
+    [
+     251,
+     0,
+     464,
+     0,
+     0
+    ],
+    [
+     111,
+     0,
+     0,
+     592,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     2,
+     992
+    ]
+   ],
+   "false_alarm_rate_per_normal_sample": 0.01348489127365151,
+   "false_alarm_samples_per_day": 1.5916666666666666
+  },
+  "v2_vote3": {
+   "accuracy": 0.9396941258255127,
+   "per_class": {
+    "normal": {
+     "precision": 0.9435696424951003,
+     "recall": 0.9857384919514262,
+     "f1": 0.964193225372052,
+     "support": 14164
+    },
+    "pv_loss": {
+     "precision": 0.8333333333333334,
+     "recall": 0.38629737609329445,
+     "f1": 0.5278884462151394,
+     "support": 686
+    },
+    "wind_stall": {
+     "precision": 0.8745173745173745,
+     "recall": 0.6335664335664336,
+     "f1": 0.734793187347932,
+     "support": 715
+    },
+    "vbat_sensor_stuck": {
+     "precision": 0.902668759811617,
+     "recall": 0.817923186344239,
+     "f1": 0.8582089552238805,
+     "support": 703
+    },
+    "battery_overheat": {
+     "precision": 0.9737903225806451,
+     "recall": 0.971830985915493,
+     "f1": 0.9728096676737161,
+     "support": 994
+    }
+   },
+   "macro_f1": 0.8115786963665441,
+   "confusion_matrix": [
+    [
+     13962,
+     53,
+     65,
+     58,
+     26
+    ],
+    [
+     419,
+     265,
+     0,
+     2,
+     0
+    ],
+    [
+     262,
+     0,
+     453,
+     0,
+     0
+    ],
+    [
+     128,
+     0,
+     0,
+     575,
+     0
+    ],
+    [
+     26,
+     0,
+     0,
+     2,
+     966
+    ]
+   ],
+   "false_alarm_rate_per_normal_sample": 0.014261508048573849,
+   "false_alarm_samples_per_day": 1.6833333333333333
+  }
+ },
+ "observable_only": {
+  "v2_single": {
+   "accuracy": 0.981105879512254,
+   "per_class": {
+    "normal": {
+     "precision": 0.9914851344639183,
+     "recall": 0.9865151087263485,
+     "f1": 0.9889938776232438,
+     "support": 14164
+    },
+    "pv_loss": {
+     "precision": 0.8527397260273972,
+     "recall": 0.996,
+     "f1": 0.9188191881918819,
+     "support": 250
+    },
+    "wind_stall": {
+     "precision": 0.8904382470119522,
+     "recall": 0.9824175824175824,
+     "f1": 0.9341692789968652,
+     "support": 455
+    },
+    "vbat_sensor_stuck": {
+     "precision": 0.8617176128093159,
+     "recall": 0.8421052631578947,
+     "f1": 0.8517985611510792,
+     "support": 703
+    },
+    "battery_overheat": {
+     "precision": 1.0,
+     "recall": 0.9979879275653923,
+     "f1": 0.9989929506545822,
+     "support": 994
+    }
+   },
+   "macro_f1": 0.9385547713235305,
+   "confusion_matrix": [
+    [
+     13973,
+     43,
+     55,
+     93,
+     0
+    ],
+    [
+     1,
+     249,
+     0,
+     0,
+     0
+    ],
+    [
+     8,
+     0,
+     447,
+     0,
+     0
+    ],
+    [
+     111,
+     0,
+     0,
+     592,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     2,
+     992
+    ]
+   ],
+   "false_alarm_rate_per_normal_sample": 0.01348489127365151,
+   "false_alarm_samples_per_day": 1.5916666666666666
+  },
+  "v2_vote3": {
+   "accuracy": 0.9766992635518532,
+   "per_class": {
+    "normal": {
+     "precision": 0.9871323529411765,
+     "recall": 0.9857384919514262,
+     "f1": 0.9864349300551082,
+     "support": 14164
+    },
+    "pv_loss": {
+     "precision": 0.8215488215488216,
+     "recall": 0.976,
+     "f1": 0.8921389396709324,
+     "support": 250
+    },
+    "wind_stall": {
+     "precision": 0.8694779116465864,
+     "recall": 0.9516483516483516,
+     "f1": 0.9087093389296957,
+     "support": 455
+    },
+    "vbat_sensor_stuck": {
+     "precision": 0.905511811023622,
+     "recall": 0.817923186344239,
+     "f1": 0.8594917787742901,
+     "support": 703
+    },
+    "battery_overheat": {
+     "precision": 0.9737903225806451,
+     "recall": 0.971830985915493,
+     "f1": 0.9728096676737161,
+     "support": 994
+    }
+   },
+   "macro_f1": 0.9239169310207485,
+   "confusion_matrix": [
+    [
+     13962,
+     53,
+     65,
+     58,
+     26
+    ],
+    [
+     6,
+     244,
+     0,
+     0,
+     0
+    ],
+    [
+     22,
+     0,
+     433,
+     0,
+     0
+    ],
+    [
+     128,
+     0,
+     0,
+     575,
+     0
+    ],
+    [
+     26,
+     0,
+     0,
+     2,
+     966
+    ]
+   ],
+   "false_alarm_rate_per_normal_sample": 0.014261508048573849,
+   "false_alarm_samples_per_day": 1.6833333333333333
+  }
+ },
+ "events_single": {
+  "events_total": 82,
+  "detected_any_alarm": 71,
+  "detected_correct_type": 70,
+  "median_delay_min": 0.0,
+  "p90_delay_min": 50.0,
+  "events_with_observable_samples": 70,
+  "observable_events_detected_correct_type": 70
+ },
+ "events_vote3": {
+  "events_total": 82,
+  "detected_any_alarm": 70,
+  "detected_correct_type": 70,
+  "median_delay_min": 10.0,
+  "p90_delay_min": 60.0,
+  "events_with_observable_samples": 70,
+  "observable_events_detected_correct_type": 70
+ },
+ "unobservable_share_of_fault_samples": 0.22466107165913493,
+ "v1_reference": {
+  "all_samples": {
+   "accuracy": 0.9461823658903951,
+   "per_class": {
+    "normal": {
+     "precision": 0.948195300331821,
+     "recall": 0.9885625529511437,
+     "f1": 0.9679582454806264,
+     "support": 14164
+    },
+    "pv_loss": {
+     "precision": 0.8496932515337423,
+     "recall": 0.4037900874635568,
+     "f1": 0.5474308300395255,
+     "support": 686
+    },
+    "wind_stall": {
+     "precision": 0.9067961165048544,
+     "recall": 0.6531468531468532,
+     "f1": 0.7593495934959349,
+     "support": 715
+    },
+    "vbat_sensor_stuck": {
+     "precision": 0.8987915407854985,
+     "recall": 0.8463726884779517,
+     "f1": 0.8717948717948718,
+     "support": 703
+    },
+    "battery_overheat": {
+     "precision": 1.0,
+     "recall": 0.9979879275653923,
+     "f1": 0.9989929506545822,
+     "support": 994
+    }
+   },
+   "macro_f1": 0.8291052982931081,
+   "confusion_matrix": [
+    [
+     14002,
+     49,
+     48,
+     65,
+     0
+    ],
+    [
+     409,
+     277,
+     0,
+     0,
+     0
+    ],
+    [
+     248,
+     0,
+     467,
+     0,
+     0
+    ],
+    [
+     108,
+     0,
+     0,
+     595,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     2,
+     992
+    ]
+   ],
+   "false_alarm_rate_per_normal_sample": 0.011437447048856256,
+   "false_alarm_samples_per_day": 1.35
+  },
+  "observable_only": {
+   "accuracy": 0.9833393697935531,
+   "per_class": {
+    "normal": {
+     "precision": 0.9920646166926456,
+     "recall": 0.9885625529511437,
+     "f1": 0.9903104887191455,
+     "support": 14164
+    },
+    "pv_loss": {
+     "precision": 0.8361204013377926,
+     "recall": 1.0,
+     "f1": 0.9107468123861567,
+     "support": 250
+    },
+    "wind_stall": {
+     "precision": 0.9038076152304609,
+     "recall": 0.9912087912087912,
+     "f1": 0.9454926624737947,
+     "support": 455
+    },
+    "vbat_sensor_stuck": {
+     "precision": 0.8987915407854985,
+     "recall": 0.8463726884779517,
+     "f1": 0.8717948717948718,
+     "support": 703
+    },
+    "battery_overheat": {
+     "precision": 1.0,
+     "recall": 0.9979879275653923,
+     "f1": 0.9989929506545822,
+     "support": 994
+    }
+   },
+   "macro_f1": 0.9434675572057103,
+   "confusion_matrix": [
+    [
+     14002,
+     49,
+     48,
+     65,
+     0
+    ],
+    [
+     0,
+     250,
+     0,
+     0,
+     0
+    ],
+    [
+     4,
+     0,
+     451,
+     0,
+     0
+    ],
+    [
+     108,
+     0,
+     0,
+     595,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     2,
+     992
+    ]
+   ],
+   "false_alarm_rate_per_normal_sample": 0.011437447048856256,
+   "false_alarm_samples_per_day": 1.35
+  },
+  "events": {
+   "events_total": 82,
+   "detected_any_alarm": 70,
+   "detected_correct_type": 70,
+   "median_delay_min": 0.0,
+   "p90_delay_min": 50.0,
+   "events_with_observable_samples": 70,
+   "observable_events_detected_correct_type": 70
+  }
+ },
+ "autoencoder_anomaly": {
+  "AUROC_fault_vs_normal_all": 0.8181514378554346,
+  "AUROC_fault_vs_normal_observable_only": 0.9332593379187681,
+  "note": "Isolation Forest not run: scikit-learn is not available in this environment"
+ }
+}
