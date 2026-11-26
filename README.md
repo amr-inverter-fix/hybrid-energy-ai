@@ -176,3 +176,10 @@
 - الشبكة الكهربائية والتكلفة غير متنمذجين. نموذج الأعطال v1 غير معاير؛ الثقة المعروضة softmax خام.
 - الـRL: بذرة تدريب واحدة وتدريب قصير؛ الفروق بين DQN وDouble DQN وPPO مش مثبتة.
 - لم يتم تدريب على بيانات حقيقية، ولا اختبار على ESP32، ولا على أجهزة موبايل حقيقية.
+
+
+---
+# Round 2 (backend, scenarios, validation)
+Status of every feature: `ACCEPTANCE.md`. Test results: `TEST_REPORT.md`. Setup: `DEPLOYMENT.md`. What changed: `IMPLEMENTATION_REPORT.md`, `UPGRADE_AUDIT.md`.
+Quick test commands: `python3 -m unittest discover -s tests`; `python3 -m pytest -q backend_tests`; `node --test tests/test_engine.mjs tests/test_iot_maint.mjs tests/test_platform.mjs tests/test_scenarios.mjs`.
+The backend has been tested in-process only. No MQTT broker, Modbus device, ESP32 or hosted server was used.
