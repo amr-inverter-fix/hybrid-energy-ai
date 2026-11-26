@@ -1,0 +1,87 @@
+{
+ "date": "2026-11-26",
+ "days_per_season": 10,
+ "results": {
+  "winter": {
+   "seed": 7399461,
+   "naive_fixed_schedule": {
+    "black_h": 67.33333333333333,
+    "crit_un_Wh": 3025.852530172514,
+    "shed_Wh_day": 0.0,
+    "flex_Wh_day": 379.1666666666662,
+    "low_h": 121.16666666666666,
+    "total_reward": -4058.26919683918
+   },
+   "hand_written_rule": {
+    "black_h": 20.166666666666664,
+    "crit_un_Wh": 712.4692872339002,
+    "shed_Wh_day": 374.2580944631237,
+    "flex_Wh_day": 220.8333333333334,
+    "low_h": 56.5,
+    "total_reward": -1225.1816677987956
+   },
+   "DQN_neural_policy": {
+    "black_h": 2.0,
+    "crit_un_Wh": 71.67859808879949,
+    "shed_Wh_day": 516.8304272364702,
+    "flex_Wh_day": 254.1666666666666,
+    "low_h": 22.666666666666664,
+    "total_reward": -327.0104783737009
+   }
+  },
+  "avg": {
+   "seed": 7399462,
+   "naive_fixed_schedule": {
+    "black_h": 25.833333333333332,
+    "crit_un_Wh": 946.1854339170542,
+    "shed_Wh_day": 0.0,
+    "flex_Wh_day": 487.4999999999999,
+    "low_h": 47.166666666666664,
+    "total_reward": -1166.4354339170527
+   },
+   "hand_written_rule": {
+    "black_h": 1.5,
+    "crit_un_Wh": 48.7701744898234,
+    "shed_Wh_day": 79.22962892597357,
+    "flex_Wh_day": 408.3333333333327,
+    "low_h": 12.833333333333332,
+    "total_reward": 45.78167771385644
+   },
+   "DQN_neural_policy": {
+    "black_h": 0.0,
+    "crit_un_Wh": 0.0,
+    "shed_Wh_day": 125.44567839591969,
+    "flex_Wh_day": 420.83333333333275,
+    "low_h": 0.0,
+    "total_reward": 147.69382746870681
+   }
+  },
+  "summer": {
+   "seed": 7399463,
+   "naive_fixed_schedule": {
+    "black_h": 0.0,
+    "crit_un_Wh": 0.0,
+    "shed_Wh_day": 0.0,
+    "flex_Wh_day": 500.0,
+    "low_h": 15.333333333333332,
+    "total_reward": 142.00000000000017
+   },
+   "hand_written_rule": {
+    "black_h": 0.0,
+    "crit_un_Wh": 0.0,
+    "shed_Wh_day": 0.0,
+    "flex_Wh_day": 500.0,
+    "low_h": 0.0,
+    "total_reward": 250.00000000000043
+   },
+   "DQN_neural_policy": {
+    "black_h": 0.0,
+    "crit_un_Wh": 0.0,
+    "shed_Wh_day": 3.4949806404802857,
+    "flex_Wh_day": 500.0,
+    "low_h": 0.0,
+    "total_reward": 248.25250967976018
+   }
+  }
+ }
+}
