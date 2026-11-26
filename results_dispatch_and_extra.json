@@ -1,0 +1,112 @@
+{
+ "dispatch_winter_3_unseen_seeds_x_20_days": {
+  "naive_fixed_schedule": {
+   "black_h": 155.38888888888889,
+   "crit_un_Wh": 6813.451236936654,
+   "shed_Wh_day": 0.0,
+   "flex_Wh_day": 397.91666666666765,
+   "low_h": 247.3333333333333,
+   "total_reward": -8964.201236936695
+  },
+  "hand_written_rule": {
+   "black_h": 43.27777777777777,
+   "crit_un_Wh": 1520.8766304181388,
+   "shed_Wh_day": 419.51445383003056,
+   "flex_Wh_day": 190.97222222222197,
+   "low_h": 147.88888888888889,
+   "total_reward": -2910.08552869262
+  },
+  "DQN_neural_policy": {
+   "black_h": 9.555555555555555,
+   "crit_un_Wh": 336.2691901615356,
+   "shed_Wh_day": 517.2605580647381,
+   "flex_Wh_day": 203.47222222222203,
+   "low_h": 37.0,
+   "total_reward": -920.7241926707135
+  }
+ },
+ "dispatch_avg_3_unseen_seeds_x_20_days": {
+  "naive_fixed_schedule": {
+   "black_h": 61.388888888888886,
+   "crit_un_Wh": 1975.6453968821406,
+   "shed_Wh_day": 0.0,
+   "flex_Wh_day": 493.0555555555555,
+   "low_h": 113.05555555555554,
+   "total_reward": -2615.2565079932688
+  },
+  "hand_written_rule": {
+   "black_h": 0.3333333333333333,
+   "crit_un_Wh": 9.06690389580535,
+   "shed_Wh_day": 88.91861399326187,
+   "flex_Wh_day": 406.25000000000097,
+   "low_h": 19.499999999999996,
+   "total_reward": 272.9311487776019
+  },
+  "DQN_neural_policy": {
+   "black_h": 0.0,
+   "crit_un_Wh": 0.0,
+   "shed_Wh_day": 147.68262245879353,
+   "flex_Wh_day": 454.86111111111154,
+   "low_h": 3.0,
+   "total_reward": 307.17848865232065
+  }
+ },
+ "dispatch_summer_3_unseen_seeds_x_20_days": {
+  "naive_fixed_schedule": {
+   "black_h": 13.388888888888888,
+   "crit_un_Wh": 378.86093777869695,
+   "shed_Wh_day": 0.0,
+   "flex_Wh_day": 499.3055555555554,
+   "low_h": 31.722222222222218,
+   "total_reward": -163.55538222313993
+  },
+  "hand_written_rule": {
+   "black_h": 0.0,
+   "crit_un_Wh": 0.0,
+   "shed_Wh_day": 12.530648775809949,
+   "flex_Wh_day": 482.63888888888897,
+   "low_h": 2.5,
+   "total_reward": 470.1082401130769
+  },
+  "DQN_neural_policy": {
+   "black_h": 0.0,
+   "crit_un_Wh": 0.0,
+   "shed_Wh_day": 35.97320155479179,
+   "flex_Wh_day": 497.9166666666665,
+   "low_h": 0.0,
+   "total_reward": 461.9434651118729
+  }
+ },
+ "dispatch_int8_check_avg_season": {
+  "DQN_int8_tflite": {
+   "black_h": 0.0,
+   "crit_un_Wh": 0.0,
+   "shed_Wh_day": 44.06706915462189,
+   "flex_Wh_day": 198.61111111111086,
+   "low_h": 6.333333333333333,
+   "total_reward": 154.54404195648848
+  },
+  "DQN_float": {
+   "black_h": 0.0,
+   "crit_un_Wh": 0.0,
+   "shed_Wh_day": 147.68262245879353,
+   "flex_Wh_day": 454.86111111111154,
+   "low_h": 3.0,
+   "total_reward": 307.17848865232065
+  }
+ },
+ "dqn_float32_tflite_size_bytes": 7916,
+ "dqn_int8_size_bytes": 3952,
+ "dqn_int8_action_agreement_with_float": 0.737,
+ "dqn_action_share_random_states(all,all+flex,critical_only)": [
+  0.5992857142857143,
+  0.13785714285714284,
+  0.26285714285714284
+ ],
+ "fault_recall_when_physically_observable": {
+  "pv_loss(g>200W/m2)": 1.0,
+  "wind_stall(ws>5.5m/s)": 0.9886621315192744,
+  "pv_loss_samples_unobservable_share": 0.6209912536443148,
+  "wind_stall_samples_unobservable_share": 0.3832167832167832
+ }
+}
