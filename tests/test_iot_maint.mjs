@@ -1,0 +1,17 @@
+import test from 'node:test'; import assert from 'node:assert/strict'; import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url); const T=require('../twin_engine.js'),I=require('../iot_interface.js'),M=require('../maintenance.js');
+test('simulated source yields valid telemetry labelled simulation',()=>{const r=T.runTwin({days:2},{controller:'rule',supervisor:true});const s=new I.SimulatedSource(r,r.cfg);
+ for(let i=0;i<300;i++){const m=s.next();assert.equal(m.source,'simulation');const v=I.validateTelemetry(m);assert.ok(v.ok,JSON.stringify(v.errors)+' at '+i);}});
+test('validator rejects bad messages',()=>{assert.equal(I.validateTelemetry(null).ok,false);assert.equal(I.validateTelemetry({}).ok,false);
+ const ok={source:'device',ts:0,v_batt:24,i_batt:1,g_wm2:500,pv_w:200,wind_ms:3,wind_w:5,t_batt_c:25,load_w:100};assert.ok(I.validateTelemetry(ok).ok);
+ assert.equal(I.validateTelemetry({...ok,v_batt:NaN}).ok,false);assert.equal(I.validateTelemetry({...ok,t_batt_c:500}).ok,false);assert.equal(I.validateTelemetry({...ok,source:'x'}).ok,false);});
+test('HttpPollSource: success, http error, invalid payload (mock fetch)',async()=>{const ok={source:'device',ts:0,v_batt:24,i_batt:1,g_wm2:500,pv_w:200,wind_ms:3,wind_w:5,t_batt_c:25,load_w:100};
+ assert.deepEqual(await new I.HttpPollSource('u',async()=>({ok:true,json:async()=>ok})).next(),ok);
+ await assert.rejects(new I.HttpPollSource('u',async()=>({ok:false,status:500})).next(),/HTTP 500/);
+ await assert.rejects(new I.HttpPollSource('u',async()=>({ok:true,json:async()=>({a:1})})).next(),/invalid telemetry/);});
+test('maintenance indicators are consistent with kpi',()=>{const r=T.runTwin({days:4},{controller:'rule',supervisor:true});const a=M.assess(r);
+ assert.ok(Math.abs(a.equivalent_cycles_per_day*4-r.kpi.battery_equivalent_cycles)<1e-9);assert.equal(a.validated,false);
+ assert.ok(a.est_days_to_assumed_end_of_life>0);const b=M.assess(r,{cycle_life_eq_cycles:1000});assert.ok(Math.abs(b.est_days_to_assumed_end_of_life/a.est_days_to_assumed_end_of_life-2)<1e-9);
+ assert.ok(M.assess(T.runTwin({days:2,batt_ah:20},{controller:'fixed'})).flags.length>0);});
+test('makeWeather with a partial config gives finite results (defaults merged)',()=>{const W=T.makeWeather({days:3,seed:1});const r=T.runTwin({days:3,seed:1},{controller:'rule',weather:W});
+ for(const k of['generation_Wh','min_soc','battery_equivalent_cycles','balance_residual_Wh'])assert.ok(Number.isFinite(r.kpi[k]),k);assert.ok(Math.abs(r.kpi.balance_residual_Wh)<1e-6);});
