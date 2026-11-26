@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>النظام الهجين الذكي (رياح + شمس) - نموذج ذكاء اصطناعي لإدارة الطاقة</title>
+<style>
+body{font-family:Tahoma,Arial,sans-serif;margin:0;background:#0f1720;color:#e8eef5;line-height:1.7}
+header{padding:18px 16px;background:linear-gradient(135deg,#0b3d2e,#1b5e8a)}
+h1{margin:0;font-size:1.3rem}h2{font-size:1.1rem;border-bottom:1px solid #2a3a4a;padding-bottom:4px}
+main{max-width:900px;margin:auto;padding:12px}
+section{background:#16212d;border-radius:10px;padding:12px 14px;margin:12px 0}
+.warn{background:#3b2f10;border:1px solid #c69026;border-radius:8px;padding:8px 10px;font-size:.92rem}
+table{width:100%;border-collapse:collapse;font-size:.85rem;display:block;overflow-x:auto}
+td,th{border:1px solid #2a3a4a;padding:4px 6px;text-align:center;white-space:nowrap}th{background:#1e2e3d}
+label{display:inline-block;margin:3px 6px;font-size:.85rem}input,select{width:90px;background:#0f1720;color:#fff;border:1px solid #3a4a5a;border-radius:5px;padding:3px}
+button{background:#1b8a5a;color:#fff;border:0;border-radius:6px;padding:7px 14px;margin:6px 3px;cursor:pointer;font-size:.95rem}
+.out{background:#0f1720;border-radius:8px;padding:8px;margin-top:6px;white-space:pre-wrap}
+#chat{height:260px;overflow:auto;background:#0f1720;border-radius:8px;padding:8px}
+.u{color:#9fd3ff}.b{color:#c8f7c5;margin-bottom:8px}
+canvas{width:100%;height:200px;background:#0f1720;border-radius:8px}
+.tag{display:inline-block;padding:0 6px;border-radius:4px;font-size:.75rem}.g{background:#1b8a5a}.a{background:#b8741a}
+.ok{background:#12301f;border:1px solid #1b8a5a;border-radius:6px;padding:6px 8px;margin:4px 0}.gen{background:#33260c;border:1px dashed #c69026;border-radius:6px;padding:6px 8px;margin:4px 0}.bad{color:#ff9a9a}
+</style></head><body>
+<header><h1>⚡ النظام الهجين الذكي (توربينة رياح فنتوري + لوح شمسي 600W) – نموذج ذكاء اصطناعي لإدارة الطاقة</h1>
+<div style="font-size:.85rem">فريق E-R | مشروع تخرج – جامعة دلتا التكنولوجية | النموذج متدرّب على <b>محاكاة</b> مبنية على أرقام المشروع</div></header>
+<main>
+<div class="warn">⚠️ صراحة: كل النتائج هنا من <b>محاكاة</b> مش من قياسات حقيقية للنظام. النماذج دي (شبكات عصبية + Reinforcement Learning) لازم تتعاير وتتدرب تاني على بيانات حقيقية من النظام قبل ما تتحكم في أي بطارية فعلية. الشات تحت <b>مش LLM</b>: هو يجاوب بكلمات مفتاحية على نتائج النماذج الحقيقية، لكن النماذج نفسها بتشتغل فعلاً في المتصفح في قسم "جرّب النموذج".</div>
+
+<section><h2>1) أداء إدارة الطاقة (Reinforcement Learning) على طقس لم يشوفه النموذج</h2>
+<div>الفصل: <select id="sea"><option value="winter">شتاء/رياح هادئة</option><option value="avg" selected>متوسط السنة</option><option value="summer">صيف/رياح نشطة</option></select>
+<label>السياسة: <span style="color:#ff7b7b">■ جدول ثابت</span> <span style="color:#ffd166">■ قاعدة مكتوبة يدوياً</span> <span style="color:#5be3a5">■ DQN (ذكاء اصطناعي)</span></label></div>
+<canvas id="cv" width="860" height="220"></canvas><div style="font-size:.8rem">شحنة البطارية (SoC) على 5 أيام محاكاة. الخط الأحمر لو نزل لـ 10% = انقطاع الأحمال الحرجة.</div>
+<div id="tbl"></div></section>
+
+<section><h2>2) جرّب النموذج بنفسك (الاستنتاج بيحصل فعلاً في المتصفح)</h2>
+<b>أ) قرار التحكم في الأحمال (DQN)</b><br>
+<label>شحن البطارية %<input id="d_soc" type="number" value="35"></label><label>الساعة<input id="d_h" type="number" step="0.5" value="19"></label>
+<label>حمل حرج W<input id="d_c" type="number" value="80"></label><label>حمل غير حرج W<input id="d_n" type="number" value="120"></label>
+<label>إنتاج الآن W<input id="d_g" type="number" value="40"></label><label>متوسط إنتاج آخر ساعة W<input id="d_m" type="number" value="60"></label>
+<label>حمل مؤجَّل متبقي Wh<input id="d_f" type="number" value="500"></label><label>سرعة الرياح m/s<input id="d_w" type="number" step="0.1" value="3"></label>
+<button onclick="runD()">قرار النموذج</button><div class="out" id="o_d"></div>
+<b>ب) توقع إنتاج الساعة الجاية</b><br>
+<label>إنتاج الآن W<input id="f0" type="number" value="300"></label><label>من 10 دقايق<input id="f1" type="number" value="310"></label><label>من 30 دقيقة<input id="f3" type="number" value="350"></label><label>من ساعة<input id="f6" type="number" value="380"></label>
+<label>متوسط آخر ساعة<input id="fm" type="number" value="330"></label><label>إشعاع W/m²<input id="fg" type="number" value="700"></label><label>رياح m/s<input id="fw" type="number" step="0.1" value="3.5"></label><label>الساعة<input id="fh" type="number" step="0.5" value="11"></label>
+<button onclick="runF()">توقع</button><div class="out" id="o_f"></div>
+<b>ج) اكتشاف الأعطال (متوسط آخر ساعة من الحساسات)</b><br>
+<label>إشعاع W/m²<input id="x_g" type="number" value="800"></label><label>قدرة اللوح W<input id="x_pv" type="number" value="370"></label><label>رياح m/s<input id="x_ws" type="number" step="0.1" value="4.5"></label><label>قدرة التوربينة W<input id="x_wp" type="number" value="19"></label>
+<label>حرارة البطارية − الجو °C<input id="x_dt" type="number" value="1"></label><label>تذبذب جهد البطارية V (std)<input id="x_sv" type="number" step="0.01" value="0.05"></label><label>متوسط |تيار| A<input id="x_ia" type="number" value="5"></label><label>تذبذب التيار A (std)<input id="x_si" type="number" step="0.1" value="1"></label>
+<button onclick="runX()">فحص</button><div class="out" id="o_x"></div></section>
+
+<section><h2>3) اسأل النموذج (شات بالكلمات المفتاحية على النتائج الحقيقية)</h2>
+<div id="chat"><div class="b">اسألني: "الأداء في الشتا؟"، "الافتراضات؟"، "التوقع؟"، "الأعطال؟"، "ESP32؟"، "إيه اللي ناقص؟"، "حدود النموذج؟"</div></div>
+<input id="q" style="width:70%" placeholder="اكتب سؤالك" onkeydown="if(event.key=='Enter')ask()"><button onclick="ask()">إرسال</button></section>
+
+<section><h2>3ب) مساعد حواري بالذكاء الاصطناعي (Puter، تجريبي)</h2>
+<div class="warn" style="font-size:.85rem">بيرد على أي سؤال عن النظام والنموذج. الأرقام الرسمية بتيجي من نتائج النموذج بس (أخضر)، وأي كلام عام بيتعلّم "عام/غير مؤكد" (أصفر)، وأي رقم مش في النتائج بيتعلّم ⚠️ أو الرد بيترفض. سؤالك بيتبعت لخدمة Puter بعد موافقتك، وممكن تطلب منك تسجيل حساب مجاني. لو ماشتغلش استخدم الشات بالكلمات فوق.</div>
+<div id="achat" style="height:260px;overflow:auto;background:#0f1720;border-radius:8px;padding:8px;margin-top:6px"></div>
+<input id="aq" style="width:70%" placeholder="اسأل أي سؤال عن النظام والنماذج" onkeydown="if(event.key=='Enter')aiAsk()"><button id="abtn" onclick="aiAsk()">إرسال للمساعد</button></section>
+<section><h2>4) الأرقام المستخدمة: معطى ولا مفترض</h2><div id="params"></div></section>
+<section><h2>5) آخر تشغيل يومي للمحاكاة</h2><div id="daily"></div></section>
+<section style="font-size:.8rem">المصدر والكود: ملفات المشروع في نفس المستودع (hybrid_sim.py, rl_dispatch.py, train_supervised.py, نماذج TFLite لـ ESP32).</section>
+</main>
+<script>
+let D=null;
+const NA=['تشغيل الحرج + غير الحرج (بدون الحمل المؤجَّل)','تشغيل الكل + الحمل المؤجَّل (مثلاً سخان/طلمبة)','فصل غير الحرج وتشغيل الحرج فقط (توفير بطارية)'];
+const FN=['طبيعي','انخفاض إنتاج اللوح (أتربة/تظليل)','توقف التوربينة','حساس جهد البطارية معلّق','سخونة البطارية'];
+function dense(layers,x,soft){for(let i=0;i<layers.length;i++){const W=layers[i].W,b=layers[i].b;const y=b.slice();for(let j=0;j<y.length;j++){for(let k=0;k<x.length;k++)y[j]+=x[k]*W[k][j];}x=(i<layers.length-1)?y.map(v=>Math.max(0,v)):y;}
+ if(soft){const m=Math.max(...x),e=x.map(v=>Math.exp(v-m)),s=e.reduce((a,b)=>a+b);return e.map(v=>v/s)}return x}
+function cs(h){return (h>6&&h<18)?1000*Math.pow(Math.max(0,Math.sin(Math.PI*(h-6)/12)),1.2):0}
+function wexp(ws){const V=D.wind_V,P=D.wind_P;if(ws<=V[0])return 0;if(ws>=V[V.length-1])return P[P.length-1]*D.boost;for(let i=1;i<V.length;i++)if(ws<=V[i])return (P[i-1]+(P[i]-P[i-1])*(ws-V[i-1])/(V[i]-V[i-1]))*D.boost}
+const v=id=>parseFloat(document.getElementById(id).value);
+function runD(){const h=v('d_h'),s=[v('d_soc')/100,Math.sin(2*Math.PI*h/24),Math.cos(2*Math.PI*h/24),v('d_c')/200,v('d_n')/300,v('d_g')/700,v('d_m')/700,cs(h+1)/1000,v('d_f')/500,v('d_w')/12];
+ const q=dense(D.models.dqn,s,false);const a=q.indexOf(Math.max(...q));
+ document.getElementById('o_d').textContent='قرار النموذج: '+NA[a]+'\nقيم Q (كل ما زادت = أفضل في نظر النموذج): '+q.map((x,i)=>i+':'+x.toFixed(2)).join(' | ')+(v('d_soc')<12?'\n⚠️ البطارية قرب الحد الأدنى.':'')}
+function runF(){const h=v('fh'),g=v('fg'),w=v('fw'),c0=cs(h),c1=cs(h+1),k=Math.min(1.5,Math.max(0,g/(c0+10)));
+ const f=[v('f0'),v('f1'),v('f3'),v('f6'),v('fm'),k,c0,c1,w,Math.pow(Math.min(w,8),3)/100,Math.min(700,Math.max(0,0.4674*k*c1)),Math.sin(2*Math.PI*h/24),Math.cos(2*Math.PI*h/24)];
+ const M=D.models.forecast;const x=f.map((a,i)=>(a-M.mu[i])/M.sd[i]);const y=dense(M.layers,x,false)[0]*100;
+ document.getElementById('o_f').textContent='متوسط الإنتاج المتوقع في الساعة الجاية: '+Math.max(0,y).toFixed(0)+' واط\n(متوسط الخطأ على بيانات محاكاة اختبار: '+D.sup.forecast.MAE_W.neural_net.toFixed(1)+' واط)'}
+function runX(){const g=v('x_g'),pv=v('x_pv'),ws=v('x_ws'),wp=v('x_wp');const rpv=g>200?Math.min(1.5,Math.max(0,pv/(0.4674*g+1e-6))):1;const rw=ws>3.5?Math.min(2,Math.max(0,wp/(wexp(ws)+1e-6))):1;
+ const sv=v('x_sv'),si=v('x_si');const f=[rpv,rw,v('x_dt'),sv,v('x_ia'),si,(sv<0.01&&si>0.2)?1:0];const M=D.models.fault;const p=dense(M.layers,f.map((a,i)=>(a-M.mu[i])/M.sd[i]),true);
+ const i=p.indexOf(Math.max(...p));document.getElementById('o_x').textContent='النتيجة: '+FN[i]+' ('+(p[i]*100).toFixed(0)+'%)\nكل الاحتمالات: '+p.map((x,j)=>FN[j]+' '+(x*100).toFixed(0)+'%').join(' | ')+'\n(نسبة اللوح للمتوقع '+rpv.toFixed(2)+'، نسبة التوربينة للمتوقع '+rw.toFixed(2)+')'}
+function draw(){const sea=document.getElementById('sea').value,T=D.traces[sea],cv=document.getElementById('cv'),c=cv.getContext('2d');c.clearRect(0,0,cv.width,cv.height);
+ c.strokeStyle='#2a3a4a';for(let i=0;i<=4;i++){c.beginPath();c.moveTo(0,10+i*50);c.lineTo(860,10+i*50);c.stroke()}
+ c.strokeStyle='#ff7b7b55';c.beginPath();c.moveTo(0,10+200*0.9);c.lineTo(860,10+200*0.9);c.stroke();
+ const col={naive:'#ff7b7b',rule:'#ffd166',dqn:'#5be3a5'};for(const n of ['naive','rule','dqn']){const s=T[n].soc;c.strokeStyle=col[n];c.lineWidth=1.6;c.beginPath();s.forEach((y,i)=>{const X=i/s.length*860,Y=210-y*200;i?c.lineTo(X,Y):c.moveTo(X,Y)});c.stroke()}
+ const R=D.disp['dispatch_'+sea+'_3_unseen_seeds_x_20_days'];const nm={naive_fixed_schedule:'جدول ثابت',hand_written_rule:'قاعدة يدوية',DQN_neural_policy:'DQN (AI)'};
+ let h='<table><tr><th>السياسة</th><th>ساعات انقطاع حرج (20 يوم)</th><th>طاقة حرجة غير مخدومة Wh</th><th>فصل غير الحرج Wh/يوم</th><th>الحمل المؤجَّل Wh/يوم</th><th>ساعات SoC&lt;20%</th></tr>';
+ for(const k in R){const r=R[k];h+=`<tr><td>${nm[k]}</td><td>${r.black_h.toFixed(1)}</td><td>${r.crit_un_Wh.toFixed(0)}</td><td>${r.shed_Wh_day.toFixed(0)}</td><td>${r.flex_Wh_day.toFixed(0)}</td><td>${r.low_h.toFixed(1)}</td></tr>`}
+ document.getElementById('tbl').innerHTML=h+'</table><div style="font-size:.8rem">متوسط 3 أيام طقس مختلفة لم يتدرب عليها النموذج × 20 يوم.</div>'}
+function params(){const rows=[['لوح شمسي','600 W','معطى (الإكسل ورقة 4)'],['معامل الأداء الكلي للوح','0.779','معطى (مشتق: 2570.7 = 600×5.5×0.779)'],['ساعات الذروة الشمسية','4.2 / 5.5 / 6.8 (شتاء/متوسط/صيف)','معطى'],['سرعة الرياح (قويسنا)','2.32 / 3.76 / 5.20 m/s','معطى'],['توربينة: دخول 90سم → عنق 35سم، Kv=2.40، Cp=0.35، 5 ريش','','معطى (ورقة 2,3,6)'],['المولد','XD-3420 DC (جدول القدرة من الإكسل)','معطى كخيار، مش محسوم إنه النهائي'],['قدرة التوربينة تحت 2.32 أو فوق 5.83 m/s','قطع عند ~1.9 m/s وسقف 60W','مفترض'],['كفاءة محوّل الرفع (Boost)','90%','مفترض'],['البطارية','24V 100Ah LiFePO4 (2.4 kWh)','مفترض (غير معطى)'],['الأحمال','حرج ~1 kWh/يوم + غير حرج + حمل مؤجَّل 500Wh/يوم (إجمالي ~2.2 kWh)','مفترض'],['الحساسات','إشعاع، رياح، جهد/تيار/حرارة بطارية','مفترض'],['شكل الطقس اليومي والغيوم والتذبذب','نموذج إحصائي مولَّد','مفترض']];
+ document.getElementById('params').innerHTML='<table><tr><th>البند</th><th>القيمة</th><th>الحالة</th></tr>'+rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td><span class="tag ${r[2].startsWith('معطى')?'g':'a'}">${r[2]}</span></td></tr>`).join('')+'</table>'}
+function daily(){const d=D.daily;let h='<div>تاريخ آخر تشغيل: '+d.date+' (طقس جديد كل يوم، '+d.days_per_season+' أيام لكل فصل)</div><table><tr><th>الفصل</th><th>سياسة</th><th>ساعات انقطاع حرج</th><th>فصل غير الحرج Wh/يوم</th></tr>';
+ for(const s in d.results){for(const k of ['naive_fixed_schedule','hand_written_rule','DQN_neural_policy']){const r=d.results[s][k];h+=`<tr><td>${s}</td><td>${k}</td><td>${r.black_h.toFixed(1)}</td><td>${r.shed_Wh_day.toFixed(0)}</td></tr>`}}
+ document.getElementById('daily').innerHTML=h+'</table>'}
+function norm(s){return s.toLowerCase().replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي')}
+function answer(t){t=norm(t);const S=D.sup,X=D.disp;const has=(...k)=>k.some(w=>t.includes(norm(w)));
+ const sea=has('شتا','شتاء','winter','هاد')?'winter':has('صيف','summer','نشط')?'summer':has('متوسط','avg','average','سنه')?'avg':null;
+ if(has('ناقص','محتاج','حقيقي','معايره','calib','real'))return 'اللي ناقص: (1) بطارية حقيقية (النوع/الفولت/الأمبير)، (2) الأحمال الفعلية بالواط والساعات، (3) قياسات حساسات حقيقية (إشعاع، رياح، جهد/تيار/حرارة)، (4) تأكيد المولد النهائي. النماذج الحالية اتدربت على محاكاة، ولازم تتعاير وتتدرب تاني على بيانات حقيقية.';
+ if(has('حدود','عيوب','صراحه','limit','honest','ثقه'))return 'حدود صريحة: كل الأرقام من محاكاة. عطل اللوح/التوربينة مش بيتكشف لو مفيش شمس/رياح أصلاً. التنبؤ بالإنتاج بيحسّن على خط الأساس لكن المحاكاة سهلة نسبياً. الـDQN في الصيف تقريباً زي القاعدة اليدوية (مش أحسن)، وميزته الكبيرة في الشتا. نسخة int8 من الـDQN أضعف، فبنستخدم float32 على ESP32.';
+ if(has('esp','tflite','تركيب','ميكرو','micro'))return 'التصدير: 3 نماذج TFLite — التوقع int8 ('+S.forecast.int8_tflite.size_bytes+' بايت)، كشف الأعطال int8 ('+S.fault.int8_tflite.size_bytes+' بايت، توافق '+(S.fault.int8_tflite.agreement_with_float_model*100).toFixed(1)+'% مع float)، والتحكم DQN float32 ('+X.dqn_float32_tflite_size_bytes+' بايت). نسخة int8 للـDQN خسرت دقة (توافق '+(X.dqn_int8_action_agreement_with_float*100).toFixed(0)+'%). لسه ماتجربتش على ESP32 فعلي.';
+ if(has('افتراض','مفترض','معطى','رقم','قيم','param','assum'))return 'معطى من ملف الإكسل: لوح 600W بمعامل 0.779، PSH 4.2/5.5/6.8، رياح 2.32/3.76/5.2 m/s، منحنى قدرة التوربينة والمولد XD-3420. مفترض: البطارية 24V 100Ah، الأحمال، كفاءة المحوّل 90%، الحساسات. التفاصيل في قسم 4.';
+ if(has('توقع','تنبا','forecast','predict')){const m=S.forecast.MAE_W;return 'توقع إنتاج الساعة الجاية (شبكة عصبية 13→32→16→1): متوسط الخطأ '+m.neural_net.toFixed(1)+' واط مقابل '+m.persistence.toFixed(1)+' للطريقة البسيطة (إنتاج الآن) و'+m.ridge_linear.toFixed(1)+' لنموذج خطي. على '+S.forecast.test_samples+' عينة اختبار محاكاة.'}
+ if(has('عطل','اعطال','fault','anomal','كشف')){const f=S.fault;return 'كشف الأعطال (شبكة عصبية 7→16→16→5): دقة '+(f.accuracy*100).toFixed(1)+'% على 120 يوم اختبار، إنذارات كاذبة '+f.false_alarm_samples_per_day_normal.toFixed(1)+' عينة/يوم، واتكشف '+f.fault_events_detected_with_correct_type+' من '+f.fault_events_total+' عطل بنوعه الصح. لما العطل يكون ظاهر فيزيائياً (فيه شمس/رياح) النموذج بيمسك أكتر من 98%؛ لكن لو مفيش شمس أو رياح العطل مبيبانش.'}
+ if(has('اداء','نتيجه','dqn','rl','تحكم','توزيع','احمال','بطاريه','شحن','سياسه','performance','result')||sea){const ss=sea?[sea]:['winter','avg','summer'],nm={winter:'شتاء',avg:'متوسط',summer:'صيف'};
+  return ss.map(s=>{const R=X['dispatch_'+s+'_3_unseen_seeds_x_20_days'];const f=k=>R[k].black_h.toFixed(1)+' ساعة انقطاع حرج، فصل غير الحرج '+R[k].shed_Wh_day.toFixed(0)+' Wh/يوم';return nm[s]+': جدول ثابت → '+f('naive_fixed_schedule')+' | قاعدة يدوية → '+f('hand_written_rule')+' | DQN → '+f('DQN_neural_policy')}).join('\n')+'\n(على 3 طقسات لم يتدرب عليها × 20 يوم، محاكاة)'}
+ if(has('مين','ايه','انت','about','what','نموذج'))return 'ده نموذج لإدارة طاقة النظام الهجين (توربينة فنتوري + لوح 600W + بطارية): شبكة عصبية لتوقع الإنتاج، شبكة لكشف الأعطال، وDQN (Reinforcement Learning) بيقرر شحن البطارية وتوزيع/فصل الأحمال. متدرب على محاكاة لأرقام مشروعكم.';
+ return 'مش فاهم السؤال بالظبط. جرّب: الأداء، الشتا، الصيف، التوقع، الأعطال، ESP32، الافتراضات، إيه اللي ناقص، حدود النموذج.'}
+function ask(){const i=document.getElementById('q'),c=document.getElementById('chat');if(!i.value.trim())return;c.innerHTML+='<div class="u">أنت: '+i.value.replace(/</g,'&lt;')+'</div><div class="b">'+answer(i.value).replace(/</g,'&lt;').replace(/\n/g,'<br>')+'</div>';i.value='';c.scrollTop=c.scrollHeight}
+
+/* ---------- AI chat (Puter) with checks ---------- */
+let aiHist=[],puterOK=false,aiAgreed=false;
+function A2E(t){return t.replace(/٫/g,'.').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d))}
+function nums(t){return (A2E(t).replace(/,/g,'').match(/\d+(?:\.\d+)?/g)||[]).map(Number)}
+function factsText(){const S=D.sup,X=D.disp,L=[];
+ L.push('FORECAST (MLP, simulated test, '+S.forecast.test_samples+' samples): MAE W: persistence '+S.forecast.MAE_W.persistence.toFixed(1)+', mean_last_hour '+S.forecast.MAE_W.mean_last_hour.toFixed(1)+', ridge '+S.forecast.MAE_W.ridge_linear.toFixed(1)+', neural_net '+S.forecast.MAE_W.neural_net.toFixed(1)+'; RMSE neural_net '+S.forecast.RMSE_W.neural_net.toFixed(1)+'; int8 tflite size '+S.forecast.int8_tflite.size_bytes+' bytes.');
+ const f=S.fault;L.push('FAULT CLASSIFIER (MLP, 5 classes, 120 simulated test days): accuracy '+(f.accuracy*100).toFixed(1)+'%, false alarms '+f.false_alarm_samples_per_day_normal.toFixed(1)+' samples/day, events detected with correct type '+f.fault_events_detected_with_correct_type+' of '+f.fault_events_total+'; int8 size '+f.int8_tflite.size_bytes+' bytes, agreement with float '+(f.int8_tflite.agreement_with_float_model*100).toFixed(1)+'%.');
+ for(const k in f.per_class)L.push('  class '+k+': precision '+(f.per_class[k].precision*100).toFixed(0)+'%, recall '+(f.per_class[k].recall*100).toFixed(0)+'%');
+ L.push('  PV-loss/wind-stall faults are not visible at night or in calm wind; when visible recall is about 100% (PV) and 99% (wind).');
+ for(const sea of ['winter','avg','summer']){const R=X['dispatch_'+sea+'_3_unseen_seeds_x_20_days'];for(const p in R){const r=R[p];L.push('DISPATCH '+sea+' '+p+': critical blackout hours '+r.black_h.toFixed(1)+', critical unserved Wh '+r.crit_un_Wh.toFixed(0)+', non-critical shed Wh/day '+r.shed_Wh_day.toFixed(0)+', deferrable load Wh/day '+r.flex_Wh_day.toFixed(0)+', hours SoC below 20% '+r.low_h.toFixed(1))}}
+ L.push('(dispatch = average of 3 unseen weather seeds x 20 simulated days each; policies: naive_fixed_schedule, hand_written_rule, DQN_neural_policy (reinforcement learning, 3 actions: serve all / serve all + deferrable load / critical only))');
+ L.push('DQN int8 tflite is worse than float (action agreement '+(X.dqn_int8_action_agreement_with_float*100).toFixed(0)+'%), so ESP32 package uses float32 DQN ('+X.dqn_float32_tflite_size_bytes+' bytes).');
+ L.push('GIVEN inputs (Excel): PV 600 W, derate 0.779, PSH 4.2/5.5/6.8, mean wind 2.32/3.76/5.20 m/s Qwesna, duct 90 to 35 cm, Kv 2.40, Cp 0.35, XD-3420 generator power table.');
+ L.push('ASSUMED inputs: battery 24V 100Ah LiFePO4, loads about 2.2 kWh/day, boost converter efficiency 90%, wind cut-in 1.9 m/s and 60 W cap, sensors. Not yet validated on real hardware; nothing ran on an ESP32.');
+ return L.join('\n')}
+function checkAI(raw,question,facts){
+ const allowed=new Set();[facts,question].forEach(t=>nums(t).forEach(n=>{allowed.add(n);allowed.add(Math.round(n));allowed.add(Math.round(n*10)/10)}));
+ const okN=n=>n<=5||allowed.has(n);
+ if(raw.length>1800)return{reject:'الرد طويل زيادة'};
+ if(/(افتح|فك|تخطي|تجاوز|اقفل|قصر|bypass|short[- ]?circuit|open the battery|disable (the )?bms|remove (the )?fuse|بدون فيوز|ماس كهربائي)/i.test(raw))return{reject:'الرد فيه خطوة خطرة محتملة (فتح/تخطي حماية)'};
+ let off='',gen='';const m1=raw.split(/عام\s*\/\s*غير مؤكد\s*[:：]/);
+ if(m1.length>=2){off=m1[0].replace(/.*من نتائج النموذج\s*[:：]/s,'').trim();gen=m1.slice(1).join(' ').trim()}else{gen=raw.trim()}
+ const badOff=nums(off).filter(n=>!okN(n));if(badOff.length)return{reject:'الجزء الرسمي فيه رقم مش في النتائج ('+badOff.slice(0,3).join(', ')+')'};
+ let genMarked=gen.replace(/\d+(?:[.,]\d+)?/g,t=>okN(Number(A2E(t).replace(',','')))?t:'⚠️'+t);
+ return{off,gen:genMarked,flagged:genMarked!==gen}}
+function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>')}
+async function aiAsk(){const i=document.getElementById('aq'),c=document.getElementById('achat'),q=i.value.trim();if(!q)return;
+ if(!aiAgreed){if(!confirm('السؤال هيتبعت لخدمة Puter (ذكاء اصطناعي خارجي) وممكن يطلب تسجيل حساب مجاني. موافق؟'))return;aiAgreed=true}
+ i.value='';c.innerHTML+='<div class="u">أنت: '+esc(q)+'</div>';const b=document.getElementById('abtn');b.disabled=true;c.innerHTML+='<div id="wait" class="b">⏳ بيفكر...</div>';c.scrollTop=1e9;
+ try{if(!puterOK){await new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://js.puter.com/v2/';s.onload=res;s.onerror=()=>rej(new Error('تعذر تحميل Puter'));document.head.appendChild(s)});puterOK=true}
+  const facts=factsText();
+  const sys='You are an assistant for a graduation project: a hybrid wind (venturi duct turbine) + solar system with neural-network forecasting, fault detection and a reinforcement-learning (DQN) energy manager, all trained on SIMULATED data. Reply in Egyptian Arabic. Use EXACTLY two sections with these labels. Section 1 label: "من نتائج النموذج:" containing ONLY facts and numbers copied from the FACTS block below. Section 2 label: "عام/غير مؤكد:" for general knowledge, explanations and advice; put any number that is not in FACTS here only if essential and say it is not verified. Never invent results, measurements or numbers for this system. Say clearly that results come from simulation. Never advise opening batteries, bypassing protections or fuses, or any dangerous step. If the answer is not in FACTS say so in section 1.\n\nFACTS:\n'+facts;
+  aiHist.push({role:'user',content:q});aiHist=aiHist.slice(-8);
+  const res=await puter.ai.chat([{role:'system',content:sys}].concat(aiHist));
+  let raw=typeof res==='string'?res:(Array.isArray(res?.message?.content)?res.message.content.map(x=>x.text||'').join(''):(res?.message?.content||res?.text||''));
+  document.getElementById('wait')?.remove();
+  if(!raw.trim())throw new Error('رد فاضي');
+  const r=checkAI(raw,q,facts);
+  if(r.reject){c.innerHTML+='<div class="b bad">🚫 الرد اترفض: '+esc(r.reject)+'. جرّب الشات بالكلمات المفتاحية فوق (من النتائج الحقيقية).</div><div class="b">'+esc(answer(q))+'</div>'}
+  else{aiHist.push({role:'assistant',content:raw});c.innerHTML+=(r.off?'<div class="ok">✅ من نتائج النموذج: '+esc(r.off)+'</div>':'')+(r.gen?'<div class="gen">⚠️ عام/غير مؤكد (تأكد من مصدر آخر): '+esc(r.gen)+(r.flagged?'<br><small>الأرقام اللي عليها ⚠️ مش في نتائج النموذج.</small>':'')+'</div>':'')}
+ }catch(e){document.getElementById('wait')?.remove();c.innerHTML+='<div class="b bad">تعذر الاتصال بالمساعد ('+esc(String(e.message||e))+'). ده رد الشات بالكلمات المفتاحية:</div><div class="b">'+esc(answer(q))+'</div>'}
+ b.disabled=false;c.scrollTop=1e9}
+fetch('data.json').then(r=>r.json()).then(j=>{D=j;draw();params();daily();document.getElementById('sea').onchange=draw});
+</script></body></html>
