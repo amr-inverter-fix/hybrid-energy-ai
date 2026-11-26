@@ -1,0 +1,49 @@
+{
+ "note": "Timing is measured with Node on the build machine, includes the twin step, and is NOT ESP32 timing. Reasons are counts of supervisor overrides over 8 scenarios x 5 seeds x 3 days (simulation).",
+ "policies": {
+  "fixed": {
+   "decisions_timed": 17280,
+   "total_ms": 162.6,
+   "ms_per_1000_decisions_incl_twin_step": 9.412,
+   "supervisor_override_reasons": {
+    "low_soc": 2017,
+    "deferrable_blocked_low_soc": 45,
+    "invalid_input": 1440
+   }
+  },
+  "rule": {
+   "decisions_timed": 17280,
+   "total_ms": 76.4,
+   "ms_per_1000_decisions_incl_twin_step": 4.419,
+   "supervisor_override_reasons": {
+    "invalid_input": 1440
+   }
+  },
+  "dqn": {
+   "decisions_timed": 17280,
+   "total_ms": 127.6,
+   "ms_per_1000_decisions_incl_twin_step": 7.383,
+   "supervisor_override_reasons": {
+    "deferrable_blocked_low_soc": 34,
+    "invalid_input": 1440
+   }
+  },
+  "ddqn": {
+   "decisions_timed": 17280,
+   "total_ms": 100.9,
+   "ms_per_1000_decisions_incl_twin_step": 5.841,
+   "supervisor_override_reasons": {
+    "deferrable_blocked_low_soc": 387,
+    "invalid_input": 1440
+   }
+  },
+  "ppo": {
+   "decisions_timed": 17280,
+   "total_ms": 100.5,
+   "ms_per_1000_decisions_incl_twin_step": 5.817,
+   "supervisor_override_reasons": {
+    "invalid_input": 1440
+   }
+  }
+ }
+}
