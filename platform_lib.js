@@ -88,6 +88,33 @@ function chunkDoc(src,text){const out=[];let head='(intro)',buf=[];const flush=(
 const tok=s=>(s.toLowerCase().match(/[\p{L}\p{N}_]{2,}/gu)||[]);
 function retrieve(chunks,q,k){k=k||3;const qs=tok(q);if(!qs.length)return[];const df={};chunks.forEach(c=>{c._t=c._t||tok(c.heading+' '+c.text);new Set(c._t).forEach(w=>df[w]=(df[w]||0)+1)});
  const sc=chunks.map(c=>{const tf={};c._t.forEach(w=>tf[w]=(tf[w]||0)+1);let s=0;qs.forEach(w=>{if(tf[w])s+=(1+Math.log(tf[w]))*Math.log(1+chunks.length/df[w])});return{c,s:s/Math.sqrt(c._t.length+10)}}).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).slice(0,k);return sc.map(x=>({source:x.c.source,heading:x.c.heading,text:x.c.text.slice(0,600),score:x.s}))}
-const api={CLASSES,CLASS_LABEL,FEATURES,validateFaultInput,observability,features,diagnose,DeviceRegistry,PROTOCOLS,UNITS,parseReplayCsv,alarmsFromRun,batteryHealth,buildReport,reportCsv,excelXml,chunkDoc,retrieve};
+
+/* ---- rule-based communication and current-sensor checks (NOT machine learning; thresholds are assumed defaults) ---- */
+const SENSOR_DEFAULTS={stale_s:300,gap_factor:3,run_len:6,min_net_w:100,tol_frac:0.25,tol_floor_w:30};
+function sensorChecks(rows,now,opts){const o=Object.assign({},SENSOR_DEFAULTS,opts||{});const out=[];const add=(category,code,severity,message)=>out.push({category,code,severity,message,rule_based:true});
+ const t=(rows||[]).map(r=>Date.parse(r.ts));
+ if(!rows||!rows.length){add('comms','no_data','warning','No telemetry received.');return out}
+ if(t.some(x=>!isFinite(x))){add('comms','bad_timestamp','warning','At least one packet has an unreadable timestamp.');return out}
+ const nowMs=now===undefined?Date.now():(typeof now==='number'?now:Date.parse(now));
+ let ordered=true;for(let i=1;i<t.length;i++)if(t[i]<=t[i-1])ordered=false;
+ if(!ordered)add('comms','ts_order','warning','Timestamps repeat or go backwards (possible duplicate packets or a device clock reset).');
+ const age=(nowMs-Math.max(...t))/1000;
+ if(age>o.stale_s)add('comms','stale','warning','Newest packet is '+Math.round(age)+' s old (limit '+o.stale_s+' s): device offline or link down.');
+ if(t.length>=4&&ordered){const d=[];for(let i=1;i<t.length;i++)d.push((t[i]-t[i-1])/1000);const sd=d.slice().sort((a,b)=>a-b),med=sd[Math.floor(sd.length/2)];const g=d.filter(x=>x>o.gap_factor*med).length;if(g)add('comms','gap','info',g+' gap(s) longer than '+o.gap_factor+'x the typical interval ('+Math.round(med)+' s): packets were lost or the device slept.')}
+ const net=r=>(+r.pv_w||0)+(+r.wind_w||0)-(+r.load_w||0);
+ const ok=rows.filter(r=>[r.v_batt,r.i_batt,r.pv_w,r.wind_w,r.load_w].every(v=>typeof v==='number'&&isFinite(v)));
+ if(ok.length<o.run_len){if(ok.length)add('current_sensor','insufficient','info','Fewer than '+o.run_len+' complete samples: current-sensor checks skipped.');return out}
+ const last=ok.slice(-o.run_len);const big=last.every(r=>Math.abs(net(r))>o.min_net_w);
+ const nets=last.map(net),varies=Math.max(...nets)-Math.min(...nets)>o.min_net_w/2;
+ if(big&&varies&&last.every(r=>r.i_batt===last[0].i_batt)&&Math.abs(last[0].i_batt)>0.2)add('current_sensor','stuck','critical','Battery current is exactly '+last[0].i_batt+' A in the last '+o.run_len+' samples while net power changes: sensor or ADC likely stuck.');
+ else if(big&&last.every(r=>Math.abs(r.i_batt)<0.2))add('current_sensor','zero_current','critical','Battery current reads about 0 A while net power is more than '+o.min_net_w+' W: current sensor open, unpowered or disconnected.');
+ else{const bad=last.filter(r=>{const exp=r.i_batt*r.v_batt,n=net(r);return Math.abs(exp-n)>Math.max(o.tol_floor_w,o.tol_frac*Math.abs(n))});
+  const inv=big&&last.every(r=>Math.sign(r.i_batt)===-Math.sign(net(r)));
+  if(inv)add('current_sensor','sign_inverted','warning','Battery current has the opposite sign to the power balance in all of the last '+o.run_len+' samples: check sensor polarity or wiring.');
+  else if(bad.length===last.length)add('current_sensor','mismatch','warning','Battery power (V x I) disagrees with PV + wind - load by more than '+Math.round(o.tol_frac*100)+'% in the last '+o.run_len+' samples. Causes can be a current-sensor offset or gain error, or an unmetered load. Converter losses are not modelled.')}
+ return out}
+
+function rowsFromHistory(h){return (h||[]).filter(x=>x&&x.source==='device'&&x.values).map(x=>Object.assign({ts:x.timestamp},x.values)).sort((a,b)=>Date.parse(a.ts)-Date.parse(b.ts))}
+const api={rowsFromHistory,sensorChecks,SENSOR_DEFAULTS,CLASSES,CLASS_LABEL,FEATURES,validateFaultInput,observability,features,diagnose,DeviceRegistry,PROTOCOLS,UNITS,parseReplayCsv,alarmsFromRun,batteryHealth,buildReport,reportCsv,excelXml,chunkDoc,retrieve};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.Plat=api;
 })(typeof window!=='undefined'?window:globalThis);
