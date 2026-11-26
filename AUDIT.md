@@ -18,3 +18,6 @@
 6. أُصلح أثناء الاختبار: التوأم كان بيقبل SoC ابتدائي خارج حدود البطارية، دلوقتي بيرفضه.
 7. sklearn وshap اتركّبوا لاحقاً (مجاناً) لتجارب Random Forest وIsolation Forest وSHAP؛ xgboost وpytest غير مستخدمين (unittest و`node --test` بدلهم).
 8. workflow اليومي لسه ماتشغلش في GitHub (مش متحقق).
+
+## Phase 1 addendum (platform release)
+Before: separate demo pages and Python scripts, no shared engine. After: `app.html` uses one twin engine, one config object and one report object; see ARCHITECTURE.md and ACCEPTANCE.md.
