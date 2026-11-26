@@ -1,0 +1,17 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';const P=createRequire(import.meta.url)('../platform_lib.js');
+const T0=Date.parse('2026-01-01T12:00:00Z');
+const mk=(n,f)=>Array.from({length:n},(_,i)=>Object.assign({ts:new Date(T0+i*60000).toISOString(),v_batt:12.6,i_batt:10,pv_w:300,wind_w:0,load_w:174,},f?f(i):{}));
+const now=T0+10*60000;const codes=r=>r.map(x=>x.code);
+test('healthy data: no findings',()=>{assert.deepEqual(P.sensorChecks(mk(10),now),[])});
+test('no data',()=>{assert.deepEqual(codes(P.sensorChecks([],now)),['no_data'])});
+test('stale',()=>{assert.ok(codes(P.sensorChecks(mk(10),now+3600e3)).includes('stale'))});
+test('gap',()=>{const r=mk(10);r.splice(5,3);assert.ok(codes(P.sensorChecks(r,now)).includes('gap'))});
+test('ts order',()=>{const r=mk(10);r[4].ts=r[2].ts;assert.ok(codes(P.sensorChecks(r,now)).includes('ts_order'))});
+test('stuck current',()=>{const r=mk(10,i=>({pv_w:300+i*20,i_batt:5}));assert.ok(codes(P.sensorChecks(r,now)).includes('stuck'))});
+test('zero current',()=>{const r=mk(10,()=>({i_batt:0}));assert.deepEqual(codes(P.sensorChecks(r,now)).filter(c=>c!=='stale'),['zero_current'])});
+test('sign inverted',()=>{const r=mk(10,i=>({i_batt:-10-i*0.1}));assert.ok(codes(P.sensorChecks(r,now)).includes('sign_inverted'))});
+test('gain error mismatch',()=>{const r=mk(10,i=>({i_batt:20+i*0.1}));assert.ok(codes(P.sensorChecks(r,now)).includes('mismatch'))});
+test('small net power: no false alarm',()=>{const r=mk(10,i=>({pv_w:100,load_w:100,i_batt:0.1+i*0.01}));assert.deepEqual(P.sensorChecks(r,now),[])});
+test('too few samples',()=>{assert.ok(codes(P.sensorChecks(mk(3),now)).includes('insufficient'))});
+test('findings are labelled rule based',()=>{assert.ok(P.sensorChecks(mk(10,()=>({i_batt:0})),now).every(f=>f.rule_based===true))});
