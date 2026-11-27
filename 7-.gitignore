@@ -1,0 +1,4 @@
+# Local AI data lives only on the user's computer - never commit it.
+local_ai_data/
+__pycache__/
+*.pyc
