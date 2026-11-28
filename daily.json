@@ -1,64 +1,72 @@
 {
- "date": "2026-11-27",
+ "date": "2026-11-28",
  "days_per_season": 10,
  "results": {
   "winter": {
-   "seed": 7399470,
+   "seed": 7399482,
    "naive_fixed_schedule": {
-    "black_h": 70.16666666666666,
-    "crit_un_Wh": 3096.9258745978273,
+    "black_h": 80.16666666666666,
+    "crit_un_Wh": 3437.778512326093,
     "shed_Wh_day": 0.0,
-    "flex_Wh_day": 374.99999999999955,
-    "low_h": 122.5,
-    "total_reward": -4117.425874597827
+    "flex_Wh_day": 483.3333333333332,
+    "low_h": 123.83333333333333,
+    "total_reward": -4514.111845659424
    },
    "hand_written_rule": {
-    "black_h": 27.166666666666664,
-    "crit_un_Wh": 945.9372680148751,
-    "shed_Wh_day": 412.54092772081384,
-    "flex_Wh_day": 262.4999999999999,
-    "low_h": 66.33333333333333,
-    "total_reward": -1576.957731875285
+    "black_h": 7.166666666666666,
+    "crit_un_Wh": 243.9519636735749,
+    "shed_Wh_day": 344.0351549329316,
+    "flex_Wh_day": 141.66666666666669,
+    "low_h": 66.66666666666666,
+    "total_reward": -771.136207806706
    },
    "DQN_neural_policy": {
-    "black_h": 6.333333333333333,
-    "crit_un_Wh": 217.69569083648653,
-    "shed_Wh_day": 475.7427970187117,
-    "flex_Wh_day": 233.33333333333334,
-    "low_h": 25.833333333333332,
-    "total_reward": -470.9004226791765
+    "black_h": 0.0,
+    "crit_un_Wh": 0.0,
+    "shed_Wh_day": 425.9816454507519,
+    "flex_Wh_day": 166.6666666666667,
+    "low_h": 8.166666666666666,
+    "total_reward": -169.65748939204238
    }
   },
   "avg": {
-   "seed": 7399471,
+   "seed": 7399483,
    "naive_fixed_schedule": {
-    "black_h": 27.5,
-    "crit_un_Wh": 1199.4891599264697,
+    "black_h": 32.5,
+    "crit_un_Wh": 1163.95507467317,
     "shed_Wh_day": 0.0,
-    "flex_Wh_day": 458.33333333333303,
-    "low_h": 48.666666666666664,
-    "total_reward": -1418.3224932598046
+    "flex_Wh_day": 470.83333333333314,
+    "low_h": 56.166666666666664,
+    "total_reward": -1512.5384080065044
    },
    "hand_written_rule": {
-    "black_h": 0.0,
-    "crit_un_Wh": 0.0,
-    "shed_Wh_day": 83.43312644557584,
-    "flex_Wh_day": 354.16666666666623,
-    "low_h": 12.666666666666666,
-    "total_reward": 89.36677011054535
+    "black_h": 0.3333333333333333,
+    "crit_un_Wh": 2.1966974361194573,
+    "shed_Wh_day": 144.20193112207562,
+    "flex_Wh_day": 341.6666666666663,
+    "low_h": 20.666666666666664,
+    "total_reward": -1.4643296638238634
    },
    "DQN_neural_policy": {
     "black_h": 0.0,
     "crit_un_Wh": 0.0,
-    "shed_Wh_day": 250.6920248785694,
-    "flex_Wh_day": 470.83333333333314,
-    "low_h": 4.333333333333333,
-    "total_reward": 110.07065422738201
+    "shed_Wh_day": 203.57243221034665,
+    "flex_Wh_day": 374.9999999999995,
+    "low_h": 0.0,
+    "total_reward": 85.71378389482645
    }
   },
   "summer": {
-   "seed": 7399472,
+   "seed": 7399484,
    "naive_fixed_schedule": {
+    "black_h": 0.0,
+    "crit_un_Wh": 0.0,
+    "shed_Wh_day": 0.0,
+    "flex_Wh_day": 500.0,
+    "low_h": 3.0,
+    "total_reward": 250.00000000000043
+   },
+   "hand_written_rule": {
     "black_h": 0.0,
     "crit_un_Wh": 0.0,
     "shed_Wh_day": 0.0,
@@ -66,21 +74,13 @@
     "low_h": 0.0,
     "total_reward": 250.00000000000043
    },
-   "hand_written_rule": {
-    "black_h": 0.0,
-    "crit_un_Wh": 0.0,
-    "shed_Wh_day": 0.0,
-    "flex_Wh_day": 491.66666666666663,
-    "low_h": 0.0,
-    "total_reward": 245.83333333333374
-   },
    "DQN_neural_policy": {
     "black_h": 0.0,
     "crit_un_Wh": 0.0,
-    "shed_Wh_day": 28.395962243917598,
+    "shed_Wh_day": 3.1461005872645216,
     "flex_Wh_day": 500.0,
     "low_h": 0.0,
-    "total_reward": 235.80201887804154
+    "total_reward": 248.42694970636816
    }
   }
  }
